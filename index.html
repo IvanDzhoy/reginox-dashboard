@@ -3,391 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>СТЭМ Реновацио - Прогноз продаж 2026</title>
+<title>СТЭМ Реновацио - Дашборды</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:Arial,sans-serif; background:#F0F4F8; color:#1A202C; font-size:13px; line-height:1.4; }
-
-.header { background:#1F3864; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; }
-.header-title { color:#fff; font-size:17px; font-weight:bold; }
-.header-sub   { color:#CADCFC; font-size:11px; }
-
-.main { padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
-.top-row { display:grid; grid-template-columns:1fr 1fr 1fr 1.18fr; gap:10px; }
-
-.card { background:#fff; border-radius:8px; border:1px solid #CBD5E0; padding:12px 14px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
-.card-title { font-size:11px; font-weight:bold; color:#1F3864; padding-bottom:8px; border-bottom:1px solid #E2E8F0; margin-bottom:10px; }
-
-.big-num   { font-size:24px; font-weight:bold; color:#1A202C; margin:2px 0; }
-.big-num-b { font-size:24px; font-weight:bold; color:#2E5496; margin:2px 0; }
-.meta  { font-size:10px; color:#718096; margin:2px 0; }
-.label { font-size:10px; color:#718096; margin-top:8px; }
-
-.tag-green { background:#E8F5E9; border:1px solid #A5D6A7; border-radius:4px; color:#27AE60; font-size:9px; font-weight:bold; padding:4px 8px; margin:6px 0; line-height:1.6; }
-
-.bud-row { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px solid #F7FAFC; }
-.bud-row:last-child { border-bottom:none; }
-.bud-val { font-weight:bold; color:#2E5496; font-size:11px; }
-
-.ch-row { border-radius:5px; padding:5px 8px; margin-bottom:5px; display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:6px; }
-.ch-ozon { background:#FFF8F0; border:1px solid #FBD38D; }
-.ch-opt  { background:#F0FFF4; border:1px solid #9AE6B4; }
-.ch-wb   { background:#EBF4FB; border:1px solid #90CDF4; }
-.ch-ya   { background:#F0FFF4; border:1px solid #9AE6B4; }
-.ch-name   { font-weight:bold; font-size:11px; }
-.ch-rev    { font-weight:bold; font-size:12px; color:#2E5496; white-space:nowrap; }
-.ch-margin { font-size:10px; color:#718096; white-space:nowrap; }
-.ch-tag    { font-size:9px; margin-top:2px; }
-.c-amber { color:#B7791F; }
-.c-green { color:#27AE60; }
-.c-blue  { color:#2E5496; }
-
-.sc-card { border-radius:6px; padding:8px 10px; margin-bottom:6px; }
-.sc-base { background:#F7F7F7; border:1px solid #CBD5E0; }
-.sc-tgt  { background:#EBF4FB; border:1px solid #90CDF4; }
-.sc-agg  { background:#EAFAF1; border:1px solid #9AE6B4; }
-.sc-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
-.sc-label-base { font-size:9px; font-weight:bold; color:#718096; text-transform:uppercase; }
-.sc-label-tgt  { font-size:9px; font-weight:bold; color:#2E5496; text-transform:uppercase; }
-.sc-label-agg  { font-size:9px; font-weight:bold; color:#27AE60; text-transform:uppercase; }
-.sc-growth-base { font-size:9px; font-weight:bold; color:#718096; }
-.sc-growth-tgt  { font-size:9px; font-weight:bold; color:#2E5496; }
-.sc-growth-agg  { font-size:9px; font-weight:bold; color:#27AE60; }
-.sc-rev-base { font-size:20px; font-weight:bold; color:#4A5568; }
-.sc-rev-tgt  { font-size:20px; font-weight:bold; color:#2E5496; }
-.sc-rev-agg  { font-size:20px; font-weight:bold; color:#27AE60; }
-.sc-details  { display:flex; gap:8px; margin-top:3px; font-size:9px; color:#718096; flex-wrap:wrap; }
-.sc-details span { white-space:nowrap; }
-.sc-budget-note { font-size:8.5px; color:#718096; margin-top:3px; font-style:italic; }
-.sc-cond { font-size:9px; color:#718096; margin-top:3px; }
-
-.sku-section { background:#fff; border-radius:8px; border:1px solid #CBD5E0; padding:12px 14px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
-.sku-title    { font-size:11px; font-weight:bold; color:#1F3864; padding-bottom:8px; border-bottom:1px solid #E2E8F0; margin-bottom:8px; }
-.sku-subtitle { font-size:9.5px; color:#718096; margin-bottom:8px; }
-
-.sku-table { width:100%; border-collapse:collapse; font-size:10px; }
-.sku-table th { background:#1F3864; color:#fff; padding:6px 8px; text-align:left; font-size:9.5px; font-weight:bold; white-space:nowrap; }
-.sku-table th.r { text-align:right; }
-.sku-table td { padding:5px 8px; border-bottom:1px solid #F0F4F8; vertical-align:middle; }
-.sku-table td.r { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.sku-table tr.total-row td { border-bottom:none; font-weight:bold; background:#F0F4F8; border-top:2px solid #CBD5E0; }
-.sku-table tr:not(.total-row):hover td { background:#FAFBFC; }
-
-.badge-base { background:#EEEEEE; color:#555; border-radius:3px; padding:1px 5px; font-size:8.5px; font-weight:bold; white-space:nowrap; }
-.badge-tgt  { background:#DBEAFE; color:#1D4ED8; border-radius:3px; padding:1px 5px; font-size:8.5px; font-weight:bold; white-space:nowrap; }
-.badge-agg  { background:#D1FAE5; color:#065F46; border-radius:3px; padding:1px 5px; font-size:8.5px; font-weight:bold; white-space:nowrap; }
-
-
-
-.bottom-card { background:#fff; border-radius:8px; border:1px solid #CBD5E0; padding:12px 14px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
-.bottom-title { font-size:11px; font-weight:bold; color:#1F3864; padding-bottom:8px; border-bottom:1px solid #E2E8F0; margin-bottom:10px; }
-.theses-grid  { display:grid; grid-template-columns:repeat(5,1fr); gap:0; }
-.thesis-col   { padding:0 12px; border-right:1px solid #E2E8F0; }
-.thesis-col:first-child { padding-left:0; }
-.thesis-col:last-child  { border-right:none; padding-right:0; }
-.thesis-head  { font-size:10px; font-weight:bold; color:#1F3864; margin-bottom:7px; }
-.thesis-col ul { padding-left:14px; }
-.thesis-col li { font-size:10px; color:#2D3748; margin-bottom:5px; line-height:1.4; }
-.li-hl   { color:#2E5496; font-weight:bold; }
-.li-warn { color:#B7791F; }
-.li-gr   { color:#27AE60; font-weight:bold; }
-.li-sub  { list-style:none; padding-left:0; font-size:9.5px; color:#2D3748; line-height:1.7; margin-bottom:3px; }
+body { font-family:Arial,sans-serif; background:#F0F4F8; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+.wrap { width:100%; max-width:560px; padding:20px; }
+.header { background:#1F3864; border-radius:10px; padding:24px 28px; margin-bottom:20px; }
+.header h1 { color:#fff; font-size:20px; }
+.header p  { color:#CADCFC; font-size:12px; margin-top:4px; }
+.card { background:#fff; border-radius:10px; border:1px solid #CBD5E0; padding:22px 28px; margin-bottom:14px;
+        text-decoration:none; display:block; box-shadow:0 1px 4px rgba(0,0,0,.06);
+        transition: box-shadow .15s, transform .15s; }
+.card:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); transform:translateY(-2px); }
+.card-label { font-size:10px; font-weight:bold; text-transform:uppercase; margin-bottom:6px; }
+.card-title { font-size:17px; font-weight:bold; color:#1A202C; margin-bottom:4px; }
+.card-desc  { font-size:12px; color:#718096; }
+.c1 .card-label { color:#2E5496; }
+.c2 .card-label { color:#27AE60; }
+.arrow { float:right; font-size:20px; color:#CBD5E0; margin-top:2px; }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <div class="header-title">СТЭМ Реновацио | Прогноз продаж 2026</div>
-  <div class="header-sub">Стратегическое обсуждение</div>
-</div>
-
-<div class="main">
-
-  <div class="top-row">
-
-    <!-- 1. ПРОДАЖИ -->
-    <div class="card">
-      <div class="card-title">ПРОДАЖИ 2025 vs 2026</div>
-      <div class="label">2025 (факт, год)</div>
-      <div class="big-num">13,9 млн руб</div>
-      <div class="meta">ВП: 9,8 млн - Маржа: 70,3%</div>
-      <div class="tag-green">
-        Янв-май 2025: 4,1 млн &rarr; Янв-май 2026: 12,7 млн<br>
-        <strong>+209% к аналогичному периоду</strong>
-      </div>
-      <div class="label" style="margin-top:8px;">2026 (H1 факт + оценка июня)</div>
-      <div class="big-num-b">~15,5 млн руб</div>
-      <div class="meta">ВП: ~8,7 млн - Маржа: ~56%</div>
-      <div style="font-size:9px;color:#B7791F;margin-top:6px;font-style:italic;">
-        Маржа снижается: рост за счет ОЗОН и низкомаржинального опта
-      </div>
-    </div>
-
-    <!-- 2. БЮДЖЕТ ГД -->
-    <div class="card">
-      <div class="card-title">БЮДЖЕТ ГД (Лаврик)</div>
-      <div class="label">Прогноз выручки 2026</div>
-      <div class="big-num-b">34,4 млн руб</div>
-      <div class="meta">К ноябрю 2026: ~4,3 млн руб/мес</div>
-      <div style="margin-top:10px;margin-bottom:4px;font-size:10px;font-weight:bold;color:#1A202C;">Операционный бюджет (мес.)</div>
-      <div class="bud-row"><span>Стабилизация (апр)</span><span class="bud-val">2,0 млн</span></div>
-      <div class="bud-row"><span>Умеренный рост</span><span class="bud-val">2,5 млн</span></div>
-      <div class="bud-row"><span>+ грант Сколково</span><span class="bud-val">+1,0 млн</span></div>
-      <div style="margin-top:10px;padding-top:8px;border-top:1px solid #E2E8F0;font-size:9px;color:#718096;line-height:1.6;">
-        ФОТ: 0,8-1,1 млн - Аренда (2 площ.): 0,4 млн<br>
-        Сырье: 0,2-0,5 млн - Командировки: 0,1-0,2 млн
-      </div>
-    </div>
-
-    <!-- 3. КАНАЛЫ -->
-    <div class="card">
-      <div class="card-title">КАНАЛЫ ПРОДАЖ (янв-май 2026)</div>
-
-      <div class="ch-row ch-ozon">
-        <div>
-          <div class="ch-name">ОЗОН</div>
-          <div class="ch-tag c-amber">оптимизировать расходы, добавить Скин/Офтал</div>
-        </div>
-        <div class="ch-rev">5,7 млн</div>
-        <div class="ch-margin">М: 41%</div>
-      </div>
-
-      <div class="ch-row ch-opt">
-        <div>
-          <div class="ch-name">Опт (дистрибьюторы)</div>
-          <div class="ch-tag c-green">растить через новых партнеров</div>
-        </div>
-        <div class="ch-rev">5,6 млн</div>
-        <div class="ch-margin">М: 71%</div>
-      </div>
-
-      <div class="ch-row ch-wb">
-        <div>
-          <div class="ch-name">Вайлдберриз</div>
-          <div class="ch-tag c-blue">удерживать, добавить Скин/Офтал</div>
-        </div>
-        <div class="ch-rev">1,3 млн</div>
-        <div class="ch-margin">М: 52%</div>
-      </div>
-
-      <div class="ch-row ch-ya">
-        <div>
-          <div class="ch-name">Яндекс Маркет</div>
-          <div class="ch-tag c-green">переоценка и масштабирование</div>
-        </div>
-        <div class="ch-rev">0,2 млн</div>
-        <div class="ch-margin">М: 61%</div>
-      </div>
-
-      <div style="font-size:9px;color:#C0392B;font-weight:bold;margin-top:8px;">
-        Ярвет = 62% всего опта - риск концентрации
-      </div>
-    </div>
-
-    <!-- 4. СЦЕНАРИИ -->
-    <div class="card">
-      <div class="card-title">ПРОГНОЗ - СЦЕНАРИИ 2026 (год)</div>
-
-      <div class="sc-card sc-base">
-        <div class="sc-head">
-          <span class="sc-label-base">Базовый (= прогноз ГД)</span>
-          <span class="sc-growth-base">Рост: x2,4-2,5</span>
-        </div>
-        <div class="sc-rev-base">34-35 млн руб</div>
-        <div class="sc-details">
-          <span>ВП год: ~19-20 млн</span><span>Маржа: ~56-57%</span>
-        </div>
-        <div class="sc-cond">1-2 новых дистрибьютора</div>
-        <div class="sc-budget-note">Маркетинг: без доп. вложений</div>
-      </div>
-
-      <div class="sc-card sc-tgt">
-        <div class="sc-head">
-          <span class="sc-label-tgt">Целевой</span>
-          <span class="sc-growth-tgt">Рост: x2,5-2,7</span>
-        </div>
-        <div class="sc-rev-tgt">35-37 млн руб</div>
-        <div class="sc-details">
-          <span>ВП год: ~21-22 млн</span><span>Маржа: ~59-60%</span>
-        </div>
-        <div class="sc-cond">3-4 партнера + запуск Скин/Офтал</div>
-        <div class="sc-budget-note">Маркетинг: ~50-65 тыс. руб/мес (H2)</div>
-      </div>
-
-      <div class="sc-card sc-agg">
-        <div class="sc-head">
-          <span class="sc-label-agg">Агрессивный</span>
-          <span class="sc-growth-agg">Рост: x3,0</span>
-        </div>
-        <div class="sc-rev-agg">41,5 млн руб</div>
-        <div class="sc-details">
-          <span>ВП год: ~25-26 млн</span><span>Маржа: ~62%</span>
-        </div>
-        <div class="sc-cond">5+ дистрибьюторов + активный маркетинг</div>
-        <div class="sc-budget-note">Маркетинг: ~100-105 тыс. руб/мес (май-дек)</div>
-      </div>
-    </div>
-
+<div class="wrap">
+  <div class="header">
+    <h1>СТЭМ Реновацио</h1>
+    <p>Аналитические дашборды</p>
   </div>
 
-  <!-- ПЛАН ПО ПРОДУКТАМ -->
-  <div class="sku-section">
-    <div class="sku-title">ПЛАН ПО ПРОДУКТАМ - ОРИЕНТИРЫ НА 2026 ГОД</div>
-    <div class="sku-subtitle">
-      H1 факт (янв-июнь) + прогноз H2 под целевые цифры каждого сценария. Цена реализации - бленд опт / маркетплейсы / прямые клиники.
-    </div>
-    <table class="sku-table">
-      <thead>
-        <tr>
-          <th>Продукт</th>
-          <th>H1 2026 (факт)</th>
-          <th class="r">Баз. год, шт</th>
-          <th class="r">Баз. выручка</th>
-          <th class="r">Цел. год, шт</th>
-          <th class="r">Цел. выручка</th>
-          <th class="r">Агр. год, шт</th>
-          <th class="r">Агр. выручка</th>
-          <th>Статус / действие</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Дентал</strong></td>
-          <td>16 612 шт / 11,2 млн</td>
-          <td class="r"><span class="badge-base">~39 800 шт</span></td>
-          <td class="r">~27,2 млн</td>
-          <td class="r"><span class="badge-tgt">~41 400 шт</span></td>
-          <td class="r">~28,3 млн</td>
-          <td class="r"><span class="badge-agg">~47 300 шт</span></td>
-          <td class="r">~32,3 млн</td>
-          <td>Активен. Темп: ~3 300 шт/мес</td>
-        </tr>
-        <tr>
-          <td><strong>Скин</strong></td>
-          <td>365 шт / 0,2 млн</td>
-          <td class="r"><span class="badge-base">~2 140 шт</span></td>
-          <td class="r">~1,43 млн</td>
-          <td class="r"><span class="badge-tgt">~2 260 шт</span></td>
-          <td class="r">~1,51 млн</td>
-          <td class="r"><span class="badge-agg">~2 710 шт</span></td>
-          <td class="r">~1,81 млн</td>
-          <td style="color:#27AE60;font-weight:bold;">Запуск июль (WB + Опт + Ozon)</td>
-        </tr>
-        <tr>
-          <td><strong>Офтал</strong></td>
-          <td>0 шт / 0</td>
-          <td class="r"><span class="badge-base">~1 070 шт</span></td>
-          <td class="r">~0,75 млн</td>
-          <td class="r"><span class="badge-tgt">~1 150 шт</span></td>
-          <td class="r">~0,81 млн</td>
-          <td class="r"><span class="badge-agg">~1 420 шт</span></td>
-          <td class="r">~1,00 млн</td>
-          <td style="color:#27AE60;font-weight:bold;">Запуск август (WB + Опт + Ozon)</td>
-        </tr>
-        <tr>
-          <td><strong>Унгидерм</strong></td>
-          <td>959 шт / 0,9 млн</td>
-          <td class="r"><span class="badge-base">~3 180 шт</span></td>
-          <td class="r">~3,08 млн</td>
-          <td class="r"><span class="badge-tgt">~3 340 шт</span></td>
-          <td class="r">~3,23 млн</td>
-          <td class="r"><span class="badge-agg">~3 910 шт</span></td>
-          <td class="r">~3,78 млн</td>
-          <td>Через СуперВет. Дисциплина цен</td>
-        </tr>
-        <tr>
-          <td><strong>Мастидерм</strong></td>
-          <td>650 шт / 0,6 млн</td>
-          <td class="r"><span class="badge-base">~2 210 шт</span></td>
-          <td class="r">~2,14 млн</td>
-          <td class="r"><span class="badge-tgt">~2 310 шт</span></td>
-          <td class="r">~2,24 млн</td>
-          <td class="r"><span class="badge-agg">~2 710 шт</span></td>
-          <td class="r">~2,62 млн</td>
-          <td>Через СуперВет. Эксклюзивность - к обсуждению</td>
-        </tr>
-        <tr class="total-row">
-          <td>ИТОГО</td>
-          <td><strong>~15,5 млн (оценка)</strong></td>
-          <td class="r"></td>
-          <td class="r"><strong>~34,5 млн</strong></td>
-          <td class="r"></td>
-          <td class="r"><strong>~36,1 млн</strong></td>
-          <td class="r"></td>
-          <td class="r"><strong>~41,5 млн</strong></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <a class="card c1" href="./analytics/">
+    <span class="arrow">›</span>
+    <div class="card-label">Аналитика продаж</div>
+    <div class="card-title">Дашборд продаж 2025-2026</div>
+    <div class="card-desc">Каналы, продукты, контрагенты, ОЗОН - детальная аналитика</div>
+  </a>
 
-  <!-- КЛЮЧЕВЫЕ ТОЧКИ -->
-  <div class="bottom-card">
-    <div class="bottom-title">КЛЮЧЕВЫЕ ТОЧКИ ПОД ПРОГНОЗ</div>
-    <div class="theses-grid">
-
-      <div class="thesis-col">
-        <div class="thesis-head">Производство - не ограничение</div>
-        <ul>
-          <li>Линия СПб: <strong>до 20 тыс. туб/мес</strong></li>
-          <li>Текущий темп: <span class="li-hl">~3 300 туб/мес (17%)</span></li>
-          <li>Свободный запас: <strong>в 5-6 раз</strong></li>
-          <li>Барьер роста - <strong>дистрибуция</strong></li>
-        </ul>
-      </div>
-
-      <div class="thesis-col">
-        <div class="thesis-head">Расширение дистрибуции</div>
-        <ul>
-          <li>Цель: <strong>3-5 новых партнеров к авг.</strong></li>
-          <li>Каждый: +130-260 тыс. руб/мес</li>
-          <li>Маржа опта 2026 (факт): <span class="li-hl">71%</span></li>
-          <li class="li-warn">Активные переговоры:</li>
-          <li class="li-sub">
-            &bull; Краснодарзооветснаб (МДЖ + СХ)<br>
-            &bull; Ветпром (МДЖ)<br>
-            &bull; Молвест (СХ, прямой)<br>
-            &bull; Эконива (СХ, прямой)<br>
-            &bull; Коневодство (СХ, прямой)
-          </li>
-        </ul>
-      </div>
-
-      <div class="thesis-col">
-        <div class="thesis-head">Скин + Офтал - быстрая победа</div>
-        <ul>
-          <li>Маржа: <strong>83-86%</strong>; линия СПб свободна</li>
-          <li><span class="li-gr">Скин: запуск июль</span> (WB + Опт + Ozon)</li>
-          <li><span class="li-gr">Офтал: запуск август</span> (WB + Опт + Ozon)</li>
-          <li>Рост ВП без капитальных затрат</li>
-          <li><span class="li-hl">Контроль цен на МП:</span> не ниже цены дистрибьютора +15% - исключить конкуренцию с партнерами</li>
-        </ul>
-      </div>
-
-      <div class="thesis-col">
-        <div class="thesis-head">Сельхоз - стратегия канала</div>
-        <ul>
-          <li>Продажи через СуперВет: <strong>поддержка дистрибьютора</strong></li>
-          <li>По мере роста: <span class="li-warn">переговоры об эксклюзивности</span></li>
-          <li>Варианты: скорректировать условия <em>или</em> разделить каналы</li>
-        </ul>
-      </div>
-
-      <div class="thesis-col">
-        <div class="thesis-head">Сезон: пик сентябрь-ноябрь</div>
-        <ul>
-          <li>37% выручки 2025 - за 3 месяца</li>
-          <li><span class="li-warn">Дистрибьюторов закрыть до августа</span></li>
-          <li>Цикл выхода на объем: 6-8 нед.</li>
-          <li><span class="li-hl">Скидки в пик:</span> акция B2B сент-окт (от 300 ед. - скидка 5%)</li>
-          <li><span class="li-hl">Мотивация менеджеров:</span> бонус за нового дистрибьютора + % от объема в H2</li>
-          <li>Упустить пик = <strong>недовыполнение плана года</strong></li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-
+  <a class="card c2" href="./forecast/">
+    <span class="arrow">›</span>
+    <div class="card-label">Прогноз</div>
+    <div class="card-title">Прогноз продаж 2026</div>
+    <div class="card-desc">Сценарии, план по продуктам, ключевые точки роста</div>
+  </a>
 </div>
 </body>
 </html>
