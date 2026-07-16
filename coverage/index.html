@@ -118,6 +118,9 @@ td.num{font-family:'JetBrains Mono',monospace;text-align:right;padding-right:0;w
 .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;
   padding:2px 7px;border-radius:2px;background:var(--mute);color:var(--ink-soft);margin-top:4px}
 .pill.warn{background:#B03E1A14;color:var(--flag)}
+.pill.talk{background:#1F6B4F14;color:var(--brand);margin-top:0}
+tbody tr.talks{background:#1F6B4F06}
+tbody tr.talks .co{color:var(--brand)}
 
 /* gap block */
 .gap-box{
@@ -138,7 +141,7 @@ td.num{font-family:'JetBrains Mono',monospace;text-align:right;padding-right:0;w
 .gap-node .no{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--flag);
   letter-spacing:.08em;text-transform:uppercase;margin-top:8px;display:block}
 .gap-arrow{text-align:center;color:var(--grey);font-size:15px}
-.gap-text{font-size:14px;color:var(--ink-soft);max-width:78ch}
+.gap-text{font-size:14.5px;color:var(--ink-soft);width:100%;max-width:none}
 .gap-text b{color:var(--ink);font-weight:500}
 .status{
   display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;
@@ -289,6 +292,13 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
           <td class="num">17 тыс</td>
           <td class="num">0,3%</td>
         </tr>
+        <tr class="talks">
+          <td class="co">КЗВС<small>Краснодарзооветснаб</small><small>Краснодар</small></td>
+          <td class="hide-s">все регионы РФ и ЕАЭС<br><span class="pill">филиалы: Подмосковье, Армавир, Сочи, Пятигорск, Новопавловск, Симферополь</span></td>
+          <td class="hide-s">25 000 SKU, 100+ брендов, сеть зооветмаркетов, франчайзинг ветаптек<br><span class="pill">оборот ~1 млрд руб, с 1937 года</span></td>
+          <td class="num">-</td>
+          <td class="num"><span class="pill talk">идут переговоры</span></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -297,7 +307,7 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
 <section>
   <div class="wrap">
     <h2>Слепая зона</h2>
-    <p class="lede">Мы знаем, где спрос, и знаем, кому отгрузили. Не знаем, куда дистрибьюторы продают дальше.</p>
+    <p class="lede">Мы знаем, где спрос, и знаем, кому отгрузили. Не знаем, куда дистрибьюторы продают дальше - запросим через Надежду.</p>
     <div class="gap-box">
       <div class="gap-flow">
         <div class="gap-node">
@@ -309,7 +319,7 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
         <div class="gap-node unknown">
           <b>Sell-out</b>
           <span>куда дистрибьютор перепродал</span>
-          <span class="no">данных нет</span>
+          <span class="no">запросим через Надежду</span>
         </div>
         <div class="gap-arrow">→</div>
         <div class="gap-node">
@@ -319,9 +329,7 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
         </div>
       </div>
       <p class="gap-text">
-        <span class="status">запрошено, ожидаем</span><br>
-        Юридический адрес дистрибьютора не говорит о географии его продаж: у Ярвета 10 филиалов и 77 регионов, у АС-Маркета - 80 регионов. Сопоставлять долю города в спросе с долей зарегистрированного там контрагента <b>некорректно</b> - это разные величины.
-        Вторичные продажи у дистрибьюторов учитываются, но нам пока не переданы. После получения появится ответ на главный вопрос: <b>совпадает ли география нашей дистрибуции с географией спроса</b>. До этого момента любые выводы о региональной структуре опта остаются гипотезой.
+        У Ярвета 10 филиалов и 77 регионов, у АС-Маркета - 80 регионов. После получения посмотрим - <b>совпадает ли география нашей дистрибуции с географией спроса</b>.
       </p>
     </div>
   </div>
@@ -348,7 +356,7 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
       <div class="find">
         <div class="find-i">03</div>
         <div>
-          <h3>Ярвет - конкурент, а не только партнер</h3>
+          <h3>Ярвет</h3>
           <p>У них 37 собственных торговых марок, включая «Синее копыто» и «Хуфдез», «Экодой» и «Здоровая корова», плюс своя молочная ферма для обкатки технологий. Это типичная картина для крупных дистрибьюторов. Оборот менее 1%.</p>
         </div>
       </div>
@@ -363,7 +371,7 @@ footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
         <div class="find-i">05</div>
         <div>
           <h3>Концентрация в двух руках</h3>
-          <p>Ярвет и СуперВет вместе дают 85,5% опта, причем СуперВет заявляет себя официальным партнером НовиСтем. Развитие АС-Маркета и Сибагро снижает этот риск - оба показывают высокую маржу при небольших объемах.</p>
+          <p>Ярвет и СуперВет вместе дают 85,5% опта, причем СуперВет заявляет себя официальным партнером НовиСтем. Развитие АС-Маркета и Сибагро снижает этот риск - оба показывают высокую маржу при небольших объемах. Переговоры с КЗВС могут дать третью опору: компания работает с 1937 года, входит в тройку лидеров зообизнеса России, поставляет во все регионы РФ и страны ЕАЭС, оборот около 1 млрд руб. Отдельно закрывает Юг, где Wildberries дает 11,7% спроса против 6,7% у Ozon.</p>
         </div>
       </div>
     </div>
