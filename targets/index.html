@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стэм Реновацио - целевые клиенты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Onest:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#101F19;
+  --ink-soft:#4A5F57;
+  --mute:#8797901a;
+  --line:#DDE5E1;
+  --paper:#F4F7F5;
+  --card:#FFFFFF;
+  --brand:#1F6B4F;
+  --brand-lite:#2E9E74;
+  --flag:#B03E1A;
+  --flag-lite:#D9764F;
+  --grey:#A8B5AF;
+  --gold:#9C7A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'Onest',system-ui,sans-serif;font-weight:300;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+a.back{
+  display:inline-block;margin-bottom:26px;font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;
+}
+a.back:hover,a.back:focus{color:var(--brand);border-color:var(--brand)}
+
+header{padding:44px 0 34px;border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--brand);font-weight:500;margin-bottom:18px;
+  font-family:'JetBrains Mono',monospace;
+}
+h1{
+  font-family:'Unbounded',sans-serif;font-weight:800;
+  font-size:clamp(28px,4.4vw,46px);line-height:1.08;letter-spacing:-.02em;
+  max-width:20ch;
+}
+.sub{margin-top:18px;max-width:66ch;color:var(--ink-soft);font-size:16px}
+
+/* switcher */
+.switcher{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:4px;overflow:hidden;margin-top:28px;width:fit-content}
+.sw-btn{
+  font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;
+  padding:12px 26px;background:var(--card);color:var(--ink-soft);border:none;cursor:pointer;
+  transition:background .15s ease,color .15s ease;
+}
+.sw-btn.active{background:var(--brand);color:#fff}
+.sw-btn:not(.active):hover{background:var(--mute);color:var(--ink)}
+
+section{padding:52px 0;border-bottom:1px solid var(--line)}
+h2{
+  font-family:'Unbounded',sans-serif;font-weight:600;
+  font-size:20px;letter-spacing:-.01em;margin-bottom:8px;
+}
+.lede{color:var(--ink-soft);max-width:68ch;margin-bottom:30px;font-size:15px}
+
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.kpi{background:var(--card);padding:24px 20px}
+.kpi-n{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(21px,2.4vw,29px);letter-spacing:-.02em;line-height:1.05}
+.kpi-n.flag{color:var(--flag)}
+.kpi-n.ok{color:var(--brand)}
+.kpi-l{margin-top:8px;font-size:12.5px;color:var(--ink-soft);line-height:1.4}
+
+/* segments (horses) */
+.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.seg{background:var(--card);padding:24px 22px}
+.seg.priority{background:#1F6B4F08}
+.seg-star{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:10px;background:#1F6B4F14;padding:3px 8px;border-radius:2px;
+}
+.seg h3{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:600;margin-bottom:8px}
+.seg p{font-size:13px;color:var(--ink-soft);margin-bottom:6px}
+.seg .verdict{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink);
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.seg.priority .verdict{color:var(--brand);font-weight:600}
+
+/* table */
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+thead th{
+  text-align:left;font-family:'JetBrains Mono',monospace;font-weight:400;
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
+  padding:0 10px 10px 0;border-bottom:1px solid var(--ink);white-space:nowrap;
+}
+tbody td{padding:12px 10px 12px 0;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:hover{background:var(--mute)}
+.rk{font-family:'JetBrains Mono',monospace;color:var(--grey);font-size:12px}
+.co{font-weight:500;font-size:14px}
+.co small{display:block;font-weight:300;color:var(--ink-soft);font-size:11.5px;margin-top:2px}
+td.num{font-family:'JetBrains Mono',monospace;text-align:right;padding-right:0;white-space:nowrap}
+.delta{font-family:'JetBrains Mono',monospace;font-size:12px}
+.delta.up{color:var(--brand)}
+.delta.down{color:var(--flag)}
+.pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  padding:2px 7px;border-radius:2px;background:var(--mute);color:var(--ink-soft)}
+.pill.hi{background:#1F6B4F14;color:var(--brand)}
+.pill.lo{background:#8797901a;color:var(--ink-soft)}
+.pill.mid{background:#9C7A1F14;color:var(--gold)}
+
+/* krasnoyarsk / farm cards */
+.farms{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:20px}
+.farm{background:var(--card);padding:20px}
+.farm-rk{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--brand);margin-bottom:6px}
+.farm h4{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:600;margin-bottom:6px;line-height:1.3}
+.farm p{font-size:12.5px;color:var(--ink-soft);margin-bottom:4px}
+.farm .why{font-size:12px;color:var(--ink);margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.route-note{
+  margin-top:18px;background:var(--card);border:1px dashed var(--grey);border-radius:3px;
+  padding:18px 20px;font-size:13.5px;color:var(--ink-soft);
+}
+.route-note b{color:var(--ink);font-weight:500}
+
+/* stud farm cards (horses priority objects) */
+.studs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:20px}
+.stud{background:var(--card);padding:22px 24px}
+.stud-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.stud-idx{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--grey)}
+.stud-fo{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--brand);
+  background:#1F6B4F14;padding:2px 7px;border-radius:2px}
+.stud h4{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:600;margin-bottom:4px;line-height:1.3}
+.stud .loc{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
+.stud-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-bottom:12px}
+.stud-meta div{font-size:12px}
+.stud-meta span{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--grey);margin-bottom:2px}
+.stud p.note{font-size:12.5px;color:var(--ink-soft);padding-top:10px;border-top:1px solid var(--line)}
+
+/* findings */
+.finds{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px}
+.find{background:var(--card);padding:24px 26px;display:grid;grid-template-columns:34px 1fr;gap:18px}
+.find-i{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--brand);padding-top:3px}
+.find h3{font-family:'Onest',sans-serif;font-size:15.5px;font-weight:600;margin-bottom:6px}
+.find p{font-size:14px;color:var(--ink-soft);max-width:74ch}
+
+.notes{font-size:13px;color:var(--ink-soft);max-width:74ch}
+footer{padding:36px 0 60px;font-size:12px;color:var(--ink-soft)}
+
+.panel{display:none}
+.panel.active{display:block}
+
+@media(max-width:860px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .segs{grid-template-columns:1fr}
+  .studs{grid-template-columns:1fr}
+  .stud-meta{grid-template-columns:1fr 1fr}
+  .sw-btn{padding:10px 18px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="../">← все дашборды</a>
+    <div class="eyebrow">Стэм Реновацио / целевые клиенты / июль 2026</div>
+    <h1>Целевые клиенты: КРС и кони</h1>
+    <p class="sub">Крупнейшие производители молока и коневодческие хозяйства России - для Мастидерма и Унгидерма (КРС) и UltraCell-Horse. Данные из открытых отраслевых рейтингов.</p>
+    <div class="switcher" role="tablist">
+      <button class="sw-btn active" id="tab-krs" role="tab" aria-selected="true">КРС</button>
+      <button class="sw-btn" id="tab-horses" role="tab" aria-selected="false">Кони</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ КРС PANEL ============ -->
+<div class="panel active" id="panel-krs">
+
+<section>
+  <div class="wrap">
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-n">34,3 млн т</div>
+        <div class="kpi-l">производство молока в РФ, 2025</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n flag">7,0 млн</div>
+        <div class="kpi-l">поголовье коров в РФ, -3% год к году</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n ok">~4,5 млн т</div>
+        <div class="kpi-l">надой топ-20 хозяйств, около 13% рынка</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n">390 тыс т</div>
+        <div class="kpi-l">Красноярский край - рекорд за всю историю</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Топ-20 производителей молока России</h2>
+    <p class="lede">Рейтинг по валовому надою за 2025 год. Источник: Milknews / Союзмолоко / Streda Consulting.</p>
+    <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Компания</th>
+          <th style="text-align:right">Надой, тыс т</th>
+          <th style="text-align:right">Динамика</th>
+          <th style="text-align:right">Коров, тыс гол</th>
+          <th style="text-align:right">КРС всего, тыс гол</th>
+        </tr>
+      </thead>
+      <tbody id="krs-table"></tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Красноярский край - отдельный блок</h2>
+    <p class="lede">390 тыс т валового надоя - рекорд за всю историю края. Рейтинг Топ-30 Сибири, Milknews / Союзмолоко.Сибирь, 2024 год.</p>
+    <div class="farms" id="krsk-farms"></div>
+    <div class="route-note">
+      <b>Логистика визитов.</b> Саянмолоко и КФХ Зубаревой находятся в одном районе (Шушенский) - один визит покрывает двух крупнейших производителей края. Назаровское - отдельная поездка (Назаровский р-н, ~200 км). Солгон - Ужурский р-н, можно совместить с маршрутом на Назаровское.
+    </div>
+  </div>
+</section>
+
+<section style="border-bottom:none">
+  <div class="wrap">
+    <h2>Источники</h2>
+    <p class="notes">Milknews / Национальный союз производителей молока (Союзмолоко) / Streda Consulting. Рейтинг Топ-30 производителей молока России 2025. Рейтинг Топ-30 производителей молока Сибири 2025. Данные Минсельхоза РФ.</p>
+  </div>
+</section>
+
+</div>
+
+<!-- ============ HORSES PANEL ============ -->
+<div class="panel" id="panel-horses">
+
+<section>
+  <div class="wrap">
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-n">1,3 млн</div>
+        <div class="kpi-l">поголовье лошадей в РФ, 2024</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n">53%</div>
+        <div class="kpi-l">поголовья - в личных хозяйствах</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n">27%</div>
+        <div class="kpi-l">Дальний Восток, 342 тыс голов</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-n ok">~80</div>
+        <div class="kpi-l">действующих конезаводов в стране</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Три сегмента коневодства - разная логика продаж</h2>
+    <p class="lede">Платежеспособность и потенциал UltraCell-Horse сильно различаются между сегментами.</p>
+    <div class="segs">
+      <div class="seg">
+        <h3>Табунное (мясное/молочное)</h3>
+        <p>Якутия, Башкирия, Алтай, Тыва, Забайкалье. Полудикое содержание, минимальный ветеринарный уход.</p>
+        <p>Сотни тысяч голов, но низкая платежеспособность на отдельное животное.</p>
+        <div class="verdict">Потенциал: низкий. Ветпомощь минимальна.</div>
+      </div>
+      <div class="seg priority">
+        <span class="seg-star">приоритет 1</span>
+        <h3>Спортивное и племенное</h3>
+        <p>~80 конезаводов по всей России. Поголовье 150-1000 голов на завод.</p>
+        <p>Профессиональные ветеринары, бюджет на уход. Каждое травмированное животное - убыток в сотни тысяч рублей.</p>
+        <div class="verdict">Платежеспособны, заинтересованы.</div>
+      </div>
+      <div class="seg">
+        <h3>Рабочее (КФХ, сельхозпредприятия)</h3>
+        <p>Средний уход, единичные лошади. Ветпомощь при травмах и болезнях.</p>
+        <p>Покупают через регионального ветврача или в зоомагазине.</p>
+        <div class="verdict">Потенциал: средний. Работа через дистрибьютора.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Топ-12 регионов по поголовью лошадей</h2>
+    <p class="lede">Источник: Росстат, бюллетень «Поголовье скота», 2024.</p>
+    <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Регион</th>
+          <th style="text-align:right">Поголовье</th>
+          <th style="text-align:right">Доля РФ</th>
+          <th>Тип</th>
+          <th>Релевантность</th>
+        </tr>
+      </thead>
+      <tbody id="horse-regions"></tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Ключевые племенные и спортивные конезаводы</h2>
+    <p class="lede">Приоритетные клиенты для UltraCell-Horse - восемь хозяйств из разных округов.</p>
+    <div class="studs" id="studs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Выводы для стратегии продаж UltraCell-Horse</h2>
+    <div class="finds">
+      <div class="find">
+        <div class="find-i">01</div>
+        <div>
+          <h3>Приоритетные регионы</h3>
+          <p>Московская обл., Воронеж, Ставрополь, Ростов - максимальная концентрация платежеспособных конезаводов и КСК. Один визит в регион дает 5-10 потенциальных клиентов в радиусе 100 км.</p>
+        </div>
+      </div>
+      <div class="find">
+        <div class="find-i">02</div>
+        <div>
+          <h3>Ипподромы - точка входа</h3>
+          <p>Ипподромы Москвы, Ростова, Уфы, Казани - центры скаковой и рысистой отрасли. Ветеринар ипподрома принимает решения по препаратам для всех лошадей, которые тренируются. Один контракт закрывает десятки голов.</p>
+        </div>
+      </div>
+      <div class="find">
+        <div class="find-i">03</div>
+        <div>
+          <h3>Отличие от молочного скота</h3>
+          <p>В отличие от КРС нет единого рейтинга по компаниям. Ключевой канал - ветеринарные врачи конезаводов и КСК, отраслевые выставки (Конная Россия, Иппосфера) и ветаптеки при ипподромах.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="border-bottom:none">
+  <div class="wrap">
+    <h2>Источники</h2>
+    <p class="notes">Росстат «Поголовье скота» 2024. Prokoni.ru. Востокгосплан. ФКСР России (fksr.org). Сибирская подкова. Официальные сайты конезаводов. Русская энциклопедия. Данные поголовья по отдельным регионам - оценочные, на основе открытых публикаций Росстата.</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    Подготовлено на основе отраслевых рейтингов и открытых данных Росстата. Июль 2026.
+  </div>
+</footer>
+
+<script>
+/* ---- switcher ---- */
+const tabKrs = document.getElementById('tab-krs');
+const tabHorses = document.getElementById('tab-horses');
+const panelKrs = document.getElementById('panel-krs');
+const panelHorses = document.getElementById('panel-horses');
+tabKrs.addEventListener('click', () => {
+  tabKrs.classList.add('active'); tabKrs.setAttribute('aria-selected','true');
+  tabHorses.classList.remove('active'); tabHorses.setAttribute('aria-selected','false');
+  panelKrs.classList.add('active'); panelHorses.classList.remove('active');
+});
+tabHorses.addEventListener('click', () => {
+  tabHorses.classList.add('active'); tabHorses.setAttribute('aria-selected','true');
+  tabKrs.classList.remove('active'); tabKrs.setAttribute('aria-selected','false');
+  panelHorses.classList.add('active'); panelKrs.classList.remove('active');
+});
+
+/* ---- КРС top-20 ---- */
+const krs = [
+  [1,'ГК «ЭкоНива»','13 регионов (Воронеж, Новосибирск, Калуга, Татарстан и др.)',1449.9,7.5,120.1,254.1],
+  [2,'Агрокомплекс им. Н.И. Ткачева','Краснодарский край - 70 ферм',330.9,-3.9,38.3,105.6],
+  [3,'ГК «Русмолко» (Olam)','Пензенская область - 3 комплекса',271.2,25.3,20.6,42.1],
+  [4,'Агрохолдинг «Степь» (АФК Система)','Краснодарский, Ставропольский кр. - 5 ферм',266.8,21.3,17.7,50.2],
+  [5,'ГК «Агропромкомплектация»','Тверская, Курская обл. - 5 комплексов',233.6,1.5,19.5,49.1],
+  [6,'АПХ «Дороничи»','Кировская область - 10 ферм',157.4,6.5,16.1,21.2],
+  [7,'АПХ «Зеленая Долина» (ГК Эфко)','Белгородская область - 6 комплексов',140.7,6.7,12.2,16.3],
+  [8,'Кировский молочный комбинат','Кировская область - 10 хозяйств',131.6,0.3,14.6,31.8],
+  [9,'Агрокомплекс «Лабинский»','Краснодарский край - 7 ферм',130.4,9.3,10.4,26.3],
+  [10,'Агрогруппа «Хорошее дело»','Мордовия, Ульяновская обл. - 21 ферма',126.5,12.1,13.3,33.1],
+  [11,'Семья Жильцовых (ПЗ «Покровское»)','Вологодская область - 4 хозяйства',117.7,19.1,10.2,25.5],
+  [12,'ГК «Молвест»','Воронежская область - 6 комплексов',116.3,2.5,15.7,26.7],
+  [13,'Агрохолдинг «Красный Восток»','Татарстан - 11 мегаферм',109.2,4.7,16.7,39.9],
+  [14,'АПК «Продовольственная программа»','Татарстан - 2 комплекса',102.6,21.2,9.4,13.3],
+  [15,'Пискаревский молочный завод','Ленинградская область - 11 хозяйств',106.8,0.7,10.2,16.2],
+  [16,'АПХ «Залесье»','Калининградская область - 6 комплексов',123.3,13.9,10.0,19.8],
+  [17,'СК «Ичалковский» / СЗ «Сармич»','Мордовия, Нижегородская обл.',97.9,4.0,8.4,20.1],
+  [18,'АПХ «Авида»','Белгородская область - 7 комплексов',96.7,-0.9,9.6,18.9],
+  [19,'ГК «Агриволга»','Ярославская область',94.9,3.6,9.4,20.9],
+  [20,'ГК «Руслакто»','Нижегородская, Кировская обл. - 10 хозяйств',74.3,4.7,7.4,16.7],
+];
+const fnum = n => n.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
+document.getElementById('krs-table').innerHTML = krs.map(([rk,name,region,milk,delta,cows,total]) => `
+  <tr>
+    <td class="rk">${rk}</td>
+    <td class="co">${name}<small>${region}</small></td>
+    <td class="num">${fnum(milk)}</td>
+    <td class="num"><span class="delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta.toFixed(1).replace('.',',')}%</span></td>
+    <td class="num">${fnum(cows)}</td>
+    <td class="num">${fnum(total)}</td>
+  </tr>`).join('');
+
+/* ---- Krasnoyarsk farms ---- */
+const krsk = [
+  ['2','ГК «Саянмолоко»','Собственная переработка - 25+ лет','107,1 тыс т','Шушенский р-н','Лидер края, переработка, Сибирь и ДВ'],
+  ['6','КФХ Зубаревой Н.В.','3 000 гол. дойного стада','43,3 тыс т','Шушенский р-н','Роботизированная карусель GEA на 72 места - крупнейшая в России'],
+  ['7','АП «Назаровское»','100+ тыс. га угодий, 4+ тыс. дойных','35,5 тыс т','Назаровский р-н','Преемник советского совхоза-ордена Ленина, переработка'],
+  ['9','АО «Солгон»','Переработка + магазины','32,3 тыс т','Ужурский р-н','Свинокомплекс + сеть магазинов в крае и Хакасии'],
+  ['~28','ПЗ «Красный маяк»','Племенной завод','13,2 тыс т','Канский р-н','Племенное хозяйство'],
+];
+document.getElementById('krsk-farms').innerHTML = krsk.map(([rk,name,detail,milk,region,why]) => `
+  <div class="farm">
+    <div class="farm-rk">#${rk} по Сибири</div>
+    <h4>${name}</h4>
+    <p>${detail}</p>
+    <p>${milk} - ${region}</p>
+    <div class="why">${why}</div>
+  </div>`).join('');
+
+/* ---- horse regions ---- */
+const relClass = r => r.startsWith('Высокая') ? 'hi' : r.startsWith('Средняя') ? 'mid' : 'lo';
+const horseRegions = [
+  [1,'Республика Саха (Якутия)','Дальний Восток - конина 42% мясного рынка республики','170 800','13,6%','Табунное','Низкая. Мясное направление, слабая ветеринария.'],
+  [2,'Республика Башкортостан','ПФО - развитое племенное + табунное','126 900','10,0%','Смешанное','Средняя. Есть спортивное направление (Татарстанский ПКЗ, КФХ).'],
+  [3,'Забайкальский край','ДФО - аборигенная забайкальская порода','104 800','8,4%','Табунное','Низкая. Традиционное коневодство.'],
+  [4,'Республика Алтай','СФО - 50 лошадей на 100 жителей','103 300','8,3%','Табунное','Низкая. Традиционное скотоводство.'],
+  [5,'Республика Тыва','СФО - 30 лошадей на 100 жителей','99 700','7,9%','Табунное','Низкая. Традиционное скотоводство.'],
+  [6,'Республика Бурятия','ДФО - часть ДФО-кластера (342 тыс. суммарно)','~55 000','~4,4%','Табунное','Низкая.'],
+  [7,'Ставропольский край','СКФО - Терский конный завод (арабская порода)','~40 000','~3,2%','Племенное/спорт','Высокая. Терский КЗ - мировой уровень племенной работы.'],
+  [8,'Ростовская область','ЮФО - КЗ им. Первой Конной Армии (буденновская)','~35 000','~2,8%','Племенное/спорт','Высокая. Несколько крупных конезаводов.'],
+  [9,'Воронежская область','ЦФО - Хреновской КЗ (орловский рысак, старейший в мире)','~30 000','~2,4%','Племенное/рысистое','Высокая. Хреновской КЗ ~500 голов, УК Продимекс Агро.'],
+  [10,'Московская область','ЦФО - МКЗ №1, Злынский КЗ, спортивные хозяйства','~28 000','~2,2%','Спортивное','Высокая. Максимальная концентрация спортивных КСК и заводов.'],
+  [11,'Рязанская область','ЦФО - Старожиловский КЗ (русская верховая)','~22 000','~1,8%','Племенное','Средняя. Старожиловский - единственный завод русской верховой.'],
+  [12,'Самарская область','ПФО - КЗ «Ермак» (ЧВП и ганноверская)','~18 000','~1,4%','Скаковое/спортивное','Высокая. КЗ Ермак - скачки и конкур высокого уровня.'],
+];
+document.getElementById('horse-regions').innerHTML = horseRegions.map(([rk,name,detail,pop,share,type,rel]) => `
+  <tr>
+    <td class="rk">${rk}</td>
+    <td class="co">${name}<small>${detail}</small></td>
+    <td class="num">${pop}</td>
+    <td class="num">${share}</td>
+    <td><span class="pill">${type}</span></td>
+    <td><span class="pill ${relClass(rel)}">${rel}</span></td>
+  </tr>`).join('');
+
+/* ---- stud farms ---- */
+const studs = [
+  ['КЗ 1','ЦФО','Хреновской конный завод','Воронежская обл., Бобровский р-н - основан в 1776 году',
+   [['Поголовье','~500'],['Порода','Орловский рысак, арабская'],['Управление','УК «Продимекс Агро» (Тюмень)'],['Направление','Рысистые испытания, племя']],
+   'Крупнейший в мире завод орловского рысака. Высокий бюджет на ветеринарию, стоимость племенной лошади 500 тыс. - 3 млн руб. Приоритетный клиент.'],
+  ['КЗ 2','СКФО','Терский племенной конный завод №169','Ставропольский край, п. Новотерский - основан в 1889 году',
+   [['Поголовье','~300-400'],['Порода','Арабская чистокровная, терская'],['Направление','Международные аукционы, экспорт'],['Статус','АО, международный уровень']],
+   'Мировой уровень арабского коневодства. Проводит международные аукционы, экспортирует лошадей. Один из самых высокоплатежных клиентов.'],
+  ['КЗ 3','ЦФО','Московский конный завод №1','Московская область, Дмитровский р-н - основан в 1924 году',
+   [['Порода','Орловский рысак, русская рысистая'],['Направление','Рысистые испытания, племя'],['Статус','ОАО, гос. поддержка'],['Ипподром','Тесная связь с ЦМИ']],
+   'Ведущий завод ЦФО по орловскому рысаку. Расположен вблизи главных ипподромов и КСК Подмосковья - высокая концентрация клиентов в радиусе 100 км.'],
+  ['КЗ 4','ЮФО','КЗ им. Первой Конной Армии','Ростовская обл., Зерноградский р-н - основан около 1921 года',
+   [['Поголовье','~150 (40 маток, 9 жеребцов)'],['Порода','Буденновская'],['Направление','Конкур, троеборье, спорт'],['Участие 2024','Конная Россия, КСК Битца']],
+   'Ведущий питомник буденновской породы. Активно участвует в выставках 2024-2025. Спортивные лошади высокой стоимости, обращение через ветеринара завода.'],
+  ['КЗ 5','ЦФО','Старожиловский конный завод','Рязанская обл., п. Старожилово - основан в 1891 году, арх. Шехтель',
+   [['Поголовье','~300'],['Порода','Русская верховая (единственный завод в РФ)'],['Направление','Верховая езда, спорт, выездка'],['Статус','Монополия на породу']],
+   'Единственное хозяйство, разводящее русскую верховую породу. Объект культурного наследия. Высокая цена животных, ветслужба развита.'],
+  ['КЗ 6','ПФО','Конный завод «Ермак»','Самарская область - основан в 2007 году',
+   [['Порода','Чистокровная верховая, ганноверская'],['Направление','Скаковые испытания, конкур'],['Статус','Частный, современный'],['Ипподром','Скачки федерального уровня']],
+   'Один из немногих современных частных конезаводов, специализирующихся на чистокровной верховой. Скаковые лошади - максимальные расходы на ветеринарию.'],
+  ['КЗ 7','ЦФО','Прилепский племенной конный завод','Тульская обл., Ленинский р-н',
+   [['Порода','Орловский рысак'],['Направление','Племенное разведение, продажа'],['Формат','Продажа и аренда лошадей']],
+   'Активная племенная работа, продажа лошадей в спорт и любительское коневодство. Удобно совмещать визит с Московской областью.'],
+  ['КЗ 8','ЦФО','Конный завод «Локотской»','Брянская область',
+   [['Порода','Верховые, спортивные, рысистые'],['Направление','Многопородное хозяйство'],['Статус','ООО, частный']],
+   'Широкая специализация по породам - потенциально применим весь спектр UltraCell (Dog/Cat/Horse) с учетом соседних животных на хозяйстве.'],
+];
+document.getElementById('studs').innerHTML = studs.map(([idx,fo,name,loc,meta,note]) => `
+  <div class="stud">
+    <div class="stud-top">
+      <div class="stud-idx">${idx}</div>
+      <div class="stud-fo">${fo}</div>
+    </div>
+    <h4>${name}</h4>
+    <div class="loc">${loc}</div>
+    <div class="stud-meta">
+      ${meta.map(([l,v]) => `<div><span>${l}</span>${v}</div>`).join('')}
+    </div>
+    <p class="note">${note}</p>
+  </div>`).join('');
+</script>
+</body>
+</html>
