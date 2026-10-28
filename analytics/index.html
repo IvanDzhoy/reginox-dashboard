@@ -72,6 +72,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 /* ---------- KPI ---------- */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:18px;
   background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.kpi-row.six{grid-template-columns:repeat(6,1fr);}
 .kpi-card{padding:18px 20px;border-right:1px solid var(--hair);}
 .kpi-card:last-child{border-right:none;}
 .kpi-label{font-family:var(--mono);font-size:9px;font-weight:500;text-transform:uppercase;
@@ -195,7 +196,7 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .ctab:hover:not(.active){background:var(--surface2);color:var(--text);}
 *:focus-visible{outline:2px solid var(--opt);outline-offset:2px;}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
-@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(3,1fr);}.ch-cards{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1300px){.kpi-row,.kpi-row.six{grid-template-columns:repeat(3,1fr);}.ch-cards{grid-template-columns:repeat(2,1fr);}
   .prod-cards{grid-template-columns:repeat(3,1fr);}.ins-row{grid-template-columns:1fr 1fr;}
   .money-flags{grid-template-columns:1fr 1fr;}
   .kpi-card:nth-child(3n){border-right:none;}}
@@ -471,6 +472,7 @@ const CP = {
 const OZ = {
   '2025':{
     months:M25,
+    units:     [298,324,361,329,367,416,571,667,696,587,908,791],
     gross:     [274784,290784,305795,305378,343358,402541,568622,622888,640224,537905,845041,802408],
     commission:[32985, 35176, 36931, 34093, 38492, 74942,122731,134374,139952,146020,285818,288647],
     delivery:  [11324, 10518,  9934, 18690, 21612, 25386, 35495, 48046,341305, 32665, 60493, 57594],
@@ -483,6 +485,7 @@ const OZ = {
   },
   '2026':{
     months:M26,
+    units:     [1105,1004,1161,1142,959,902,1030,1451,1042,528],
     gross:     [1114809,1003738,1136140,1201853,1198184,1119984,1191762,1590187,1537916,777067],
     commission:[400414, 361346, 408389, 520429, 539333,503993, 535730, 717669, 737290,372992],
     delivery:  [ 61484,  50340,  62358,  78069,  78616, 84906,  74059, 101261,  97716, 48068],
@@ -951,13 +954,16 @@ function renderOzon(){
   const tDel=s(oz.delivery);
   const tFBO=s(oz.fbo);
   const totalWh=tGross>0?(tGross-tPay)/tGross*100:0;
+  const tUnits=s(oz.units);
 
+  document.getElementById('ozKpi').classList.add('six');
   document.getElementById('ozKpi').innerHTML=[
     {l:'Gross продажи',        v:fmt(tGross),              s:sy+' год',                 c:'#059669'},
     {l:'Выплачено',            v:fmt(tPay),                s:(tPay/tGross*100).toFixed(1)+'% от gross',  c:'#2563eb'},
     {l:'Итого удержано',       v:fmt(tGross-tPay),         s:'-'+totalWh.toFixed(1)+'% от gross',        c:'#dc2626'},
     {l:'Комиссия Ozon',        v:fmt(tComm),               s:pct(tComm,tGross)+' от gross',              c:'#7c3aed'},
-    {l:'Реклама и продвиж.',   v:fmt(tAdv),                s:pct(tAdv,tGross)+' от gross',               c:'#d97706'}
+    {l:'Реклама и продвиж.',   v:fmt(tAdv),                s:pct(tAdv,tGross)+' от gross',               c:'#d97706'},
+    {l:'Продано единиц',       v:fmtN(tUnits),             s:fmtN(tGross/tUnits)+' руб./шт в среднем',    c:'#0891b2'}
   ].map(k=>`<div class="kpi-card">
     <div class="kpi-label">${k.l}</div>
     <div class="kpi-val" style="color:${k.c}">${k.v}</div>
@@ -1005,14 +1011,16 @@ function renderOzon(){
   document.getElementById('ozTbl').innerHTML=`
     <table>
       <thead><tr>
-        <th>Месяц</th><th>Gross</th><th>Комиссия</th><th>Доставка</th>
+        <th>Месяц</th><th>Шт</th><th>Gross</th><th>Руб/шт</th><th>Комиссия</th><th>Доставка</th>
         <th>Агенты</th><th>FBO</th><th>Реклама</th><th>Прочее</th>
         <th>Выплачено</th><th>Удержано, %</th>
       </tr></thead>
       <tbody>
         ${oz.months.map((m,i)=>`<tr>
           <td>${m}</td>
+          <td>${fmtN(oz.units[i])}</td>
           <td>${fmtN(oz.gross[i])}</td>
+          <td style="color:var(--muted)">${oz.units[i]?fmtN(oz.gross[i]/oz.units[i]):'—'}</td>
           <td style="color:#dc2626">${fmtN(oz.commission[i])}</td>
           <td>${fmtN(oz.delivery[i])}</td>
           <td>${fmtN(oz.agents[i])}</td>
@@ -1024,7 +1032,9 @@ function renderOzon(){
         </tr>`).join('')}
         <tr class="total-row">
           <td>ИТОГО</td>
+          <td>${fmtN(tUnits)}</td>
           <td>${fmtN(tGross)}</td>
+          <td style="color:var(--muted)">${fmtN(tGross/tUnits)}</td>
           <td style="color:#dc2626">${fmtN(tComm)}</td>
           <td>${fmtN(tDel)}</td>
           <td>${fmtN(s(oz.agents))}</td>
