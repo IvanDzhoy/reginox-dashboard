@@ -127,8 +127,12 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .mp-md{background:#fdf5e3;color:#8a5a08;}
 .mp-lo{background:#fdeaea;color:#a81f1f;}
 table.cash th,table.cash td{padding-left:10px;padding-right:10px;}
-table.cash tr.grp th{font-size:8.5px;letter-spacing:.14em;padding-bottom:6px;border-bottom:none;text-align:center;}
-tr.grp th.g-in{color:var(--opt);}tr.grp th.g-out{color:var(--red);}tr.grp th.g-res{color:var(--text2);}
+table.cash tr.grp th{font-size:9.5px;font-weight:600;letter-spacing:.1em;padding:7px 10px;
+  text-align:center;border-bottom:2px solid;border-radius:4px 4px 0 0;}
+tr.grp th.g-in{color:var(--opt);background:#eef3ff;border-bottom-color:var(--opt);}
+tr.grp th.g-out{color:var(--red);background:#fdf0f0;border-bottom-color:var(--red);}
+tr.grp th.g-res{color:var(--text2);background:var(--surface2);border-bottom-color:var(--border2);}
+table.cash thead tr:nth-child(2) th{padding-top:9px;}
 table.cash .b-in,table.cash .b-out,table.cash .b-res{border-left:1px solid var(--border);}
 table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{border-left:1px solid var(--border);}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
