@@ -956,7 +956,8 @@ function renderOzon(){
     {l:'Итого удержано',       v:fmt(tGross-tPay),         s:'-'+totalWh.toFixed(1)+'% от gross',        c:'#dc2626'},
     {l:'Комиссия Ozon',        v:fmt(tComm),               s:pct(tComm,tGross)+' от gross',              c:'#7c3aed'},
     {l:'Реклама и продвиж.',   v:fmt(tAdv),                s:pct(tAdv,tGross)+' от gross',               c:'#d97706'},
-    {l:'Продано единиц',       v:fmtN(tUnits),             s:fmtN(tGross/tUnits)+' руб./шт в среднем',    c:'#0891b2'}
+    {l:'Продано единиц',       v:fmtN(tUnits),
+     s:'витрина '+fmtN(tGross/tUnits)+' руб./шт, получено '+fmtN(tPay/tUnits), c:'#0891b2'}
   ].map(k=>`<div class="kpi-card">
     <div class="kpi-label">${k.l}</div>
     <div class="kpi-val" style="color:${k.c}">${k.v}</div>
@@ -1015,7 +1016,7 @@ function renderOzon(){
       <thead><tr>
         <th>Месяц</th><th>Шт</th><th>Gross</th><th>Руб/шт</th><th>Комиссия</th><th>Доставка</th>
         <th>Агенты</th><th>FBO</th><th>Реклама</th><th>Прочее</th>
-        <th>Выплачено</th><th>Удержано, %</th>
+        <th>Выплачено</th><th>Получено/шт</th><th>Удержано, %</th>
       </tr></thead>
       <tbody>
         ${oz.months.map((m,i)=>`<tr>
@@ -1030,6 +1031,7 @@ function renderOzon(){
           <td>${fmtN(oz.adv[i])}</td>
           <td>${fmtN(oz.other[i])}</td>
           <td style="color:#059669;font-weight:700">${fmtN(oz.payout[i])}</td>
+          <td style="color:#059669">${oz.units[i]?fmtN(oz.payout[i]/oz.units[i]):'—'}</td>
           <td><span class="mp ${oz.wh[i]>=55?'mp-lo':oz.wh[i]>=42?'mp-md':'mp-hi'}">${oz.wh[i].toFixed(1)}%</span></td>
         </tr>`).join('')}
         <tr class="total-row">
@@ -1044,11 +1046,13 @@ function renderOzon(){
           <td>${fmtN(tAdv)}</td>
           <td>${fmtN(s(oz.other))}</td>
           <td style="color:#059669;font-weight:700">${fmtN(tPay)}</td>
+          <td style="color:#059669">${fmtN(tPay/tUnits)}</td>
           <td><span class="mp ${mpc(100-totalWh)}">${totalWh.toFixed(1)}%</span></td>
         </tr>
       </tbody>
     </table>
-    <div class="note">Источник: выписка начислений ОЗОН. Окт 2026 — неполный месяц (данные на 23.10). Поступления за Июл-Окт рассчитаны по статьям начислений. Высокая доставка Сен 2025 — вероятная опечатка в исходнике ОЗОН (341 тыс.).</div>`;
+    <div class="note">Источник: выписка начислений ОЗОН. Окт 2026 — неполный месяц (данные на 23.10). Поступления за Июл-Окт рассчитаны по статьям начислений. «Руб/шт» — цена на витрине, «Получено/шт» — сколько дошло до компании после всех удержаний.
+    Высокая доставка Сен 2025 — вероятная опечатка в исходнике ОЗОН (341 тыс.).</div>`;
 }
 
 // =============================================================
