@@ -174,6 +174,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
 .flag-val{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.02em;}
 
 /* ---------- MISC ---------- */
+.chart-box{position:relative;height:310px;}
 .pie-wrap{position:relative;height:240px;margin:0 auto;max-width:760px;}
 .pie-wrap.sm{height:210px;max-width:560px;}
 .page{display:none;}
@@ -324,7 +325,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
       <div class="sec-title">Поступления, затраты и остаток на счете</div>
       <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Столбцы — обороты месяца, линия — остаток на конец</div>
     </div>
-    <canvas id="moneyChart" height="160"></canvas>
+    <div class="chart-box"><canvas id="moneyChart"></canvas></div>
   </div>
 
   <div class="card chart-card" style="padding-bottom:18px;">
@@ -494,23 +495,24 @@ const OZ = {
 //          реестр дебиторки (на 24.09.2026)
 // =============================================================
 const MONEY = {
-  // closed — число закрытых месяцев. Раздел считается только по ним:
-  // оперативный остаток живет в чате бухгалтерии, здесь — месячный срез.
-  closed: 6,
-  months: ['Апр','Май','Июн','Июл','Авг','Сен','Окт*'],
-  sales:  [1808305,2085262,1920484,1694752,2246807,1918071,827893],
-  grant:  [499357,466547,470464,475132,471168,487439,381217],
-  loans:  [1500000,1500000,1500000,1000000,0,0,0],
-  other:  [0,168408,157989,500285,768872,629479,280000],
-  inflow: [3807661,4220217,4048937,3670169,3486847,3034989,1489110],
-  oper:   [2035311,2670165,2758769,2545337,2784779,2911135,2446859],
-  fot:    [1089411,1717099,1511599,1526439,1827104,1884203,1905609],
-  admin:  [374071,519854,441442,516807,465183,326551,347411],
-  raw:    [332178,110532,617133,315064,302133,352667,10356],
-  otherop:[239651,322680,188594,187026,190358,347714,183483],
-  debt:   [3391900,1150684,1498646,1100775,0,0,0],
-  close:  [343648,743016,534539,558596,1260665,1384519,426770]
+  // Только ЗАКРЫТЫЕ месяцы. Новый месяц добавляется после закрытия: допишите
+  // значение в каждый массив. Грант исключен с обеих сторон — он транзитный:
+  // приходит и рубль в рубль уходит на «ФОТ (грант)», на деньги не влияет.
+  months:   ['Апр','Май','Июн','Июл','Авг','Сен'],
+  sales:    [1808305,2085262,1920484,1694752,2246807,1918071],  // поступления от продаж
+  loans:    [1500000,1500000,1500000,1000000,0,0],
+  other:    [0,168408,157989,500285,768872,629479],             // возврат займа НовиСтем
+  own:      [1535954,2203618,2288305,2070205,2313611,2423696],  // собственные затраты (операц. минус ФОТ по гранту)
+  fot:      [590054,1250552,1041135,1051307,1355936,1396764],   // собственный ФОТ с налогами
+  admin:    [374071,519854,441442,516807,465183,326551],
+  raw:      [332178,110532,617133,315064,302133,352667],
+  otherop:  [239651,322680,188594,187026,190358,347714],
+  debt:     [3391900,1150684,1498646,1100775,0,0],              // погашение долгов
+  close:    [343648,743016,534539,558596,1260665,1384519],      // остаток на конец месяца
+  openBal:  1963198,                                            // остаток на начало апреля
+  grantAvg: 476051                                              // транзит гранта, в среднем за июнь-сентябрь
 };
+
 
 // Дебиторка на 24.09.2026
 const AR = {
@@ -1053,166 +1055,149 @@ function renderOzon(){
 // MONEY PAGE
 // =============================================================
 function renderMoney(){
-  const M=MONEY, n=M.closed, i=n-1;              // i — последний ЗАКРЫТЫЙ месяц
-  const upto=a=>a.slice(0,n);                      // срез по закрытым месяцам
-  const mName={'Апр':'апрель','Май':'май','Июн':'июнь','Июл':'июль','Авг':'август','Сен':'сентябрь'};
-  const lastName=mName[M.months[i]]||M.months[i];
-  const last={sales:M.sales[i],oper:M.oper[i],close:M.close[i],gap:M.sales[i]-M.oper[i]};
-  const cover=last.sales/last.oper*100;
-  const covCol=cover>=100?'#059669':cover>=80?'#d97706':'#dc2626';
+  const M=MONEY, n=M.months.length, i=n-1;
+  const mName={'Апр':'апрель','Май':'май','Июн':'июнь','Июл':'июль','Авг':'август','Сен':'сентябрь','Окт':'октябрь'};
+  const last=mName[M.months[i]]||M.months[i], lastOf=last.slice(0,-1)+'я';
+  const inflow=k=>M.sales[k]+M.loans[k]+M.other[k];
+  const chg=k=>inflow(k)-M.own[k]-M.debt[k];
+  const cover=M.sales[i]/M.own[i]*100;
+  const defic=M.sales[i]-M.own[i];
+  const covCol=cover>=100?'#059669':cover>=85?'#d97706':'#dc2626';
   const arTotal=s(AR.rows.map(r=>r.sum))+AR.mp;
 
-  // --- KPI ---
+  // ---------- KPI: цепочка от продаж к остатку ----------
   document.getElementById('moneyKpi').classList.add('six');
   document.getElementById('moneyKpi').innerHTML=[
-    {l:'Покрытие затрат', v:cover.toFixed(0)+'%', s:'продажи к затратам '+lastName, c:covCol},
-    {l:'Остаток на конец мес.', v:fmt(last.close), s:'на конец '+lastName.slice(0,-1)+'я, руб.', c:'#2563eb'},
-    {l:'Поступило от продаж', v:fmt(last.sales), s:'за '+lastName, c:'#7c3aed'},
-    {l:'Операционные затраты', v:fmt(last.oper), s:'за '+lastName, c:'#be185d'},
-    {l:'Разрыв месяца', v:fmt(Math.abs(last.gap)), s:last.gap<0?'затраты выше продаж':'профицит', c:'#dc2626'},
-    {l:'Дебиторская задолж.', v:fmt(arTotal), s:'на 24.09, руб.', c:'#d97706'}
+    {l:'Поступило от продаж', v:fmt(M.sales[i]), s:'за '+last, c:'#2563eb'},
+    {l:'Собственные затраты', v:fmt(M.own[i]),   s:'без грантовых зарплат', c:'#be185d'},
+    {l:'Покрытие затрат', v:cover.toFixed(0)+'%', s:'продажи к своим затратам', c:covCol},
+    {l:defic<0?'Дефицит месяца':'Профицит месяца', v:fmt(Math.abs(defic)),
+     s:defic<0?'продажи не покрыли затраты':'продажи покрыли затраты', c:defic<0?'#dc2626':'#059669'},
+    {l:'Изменение остатка', v:(chg(i)>0?'+':'−')+fmt(Math.abs(chg(i))),
+     s:'с учетом займов и долгов', c:chg(i)<0?'#dc2626':'#059669'},
+    {l:'Остаток на конец', v:fmt(M.close[i]), s:'на конец '+lastOf+', руб.', c:'#7c3aed'}
   ].map(k=>`<div class="kpi-card">
     <div class="kpi-label">${k.l}</div>
     <div class="kpi-val" style="color:${k.c}">${k.v}</div>
     <div class="kpi-sub">${k.s}</div></div>`).join('');
 
-  // --- флаги: структура затрат последнего месяца ---
+  // ---------- структура собственных затрат ----------
   const st=[['Оплата труда',M.fot[i],'#7c3aed'],['Админ. и общехоз.',M.admin[i],'#2563eb'],
             ['Сырье и материалы',M.raw[i],'#059669'],['Прочие операционные',M.otherop[i],'#d97706']];
   document.getElementById('moneyFlags').innerHTML=st.map(([l,v,c])=>`
     <div class="flag">
       <div class="flag-lbl">${l}</div>
       <div class="flag-val" style="color:${c}">${fmt(v)}</div>
-      <div class="bar-wrap" style="margin-top:10px;"><div class="bar-fill" style="width:${v/last.oper*100}%;background:${c}"></div></div>
-      <div class="kpi-sub" style="margin-top:7px;font-family:var(--mono);font-size:10px;">${v/last.oper*100<1?'<1':(v/last.oper*100).toFixed(0)}% затрат</div>
+      <div class="bar-wrap" style="margin-top:10px;"><div class="bar-fill" style="width:${v/M.own[i]*100}%;background:${c}"></div></div>
+      <div class="kpi-sub" style="margin-top:7px;font-family:var(--mono);font-size:10px;">${v/M.own[i]*100<1?'<1':(v/M.own[i]*100).toFixed(0)}% своих затрат</div>
     </div>`).join('');
 
-  // --- график ---
+  // ---------- график ----------
   if(charts.money) charts.money.destroy();
   charts.money=new Chart(document.getElementById('moneyChart').getContext('2d'),{
-    data:{labels:upto(M.months),datasets:[
-      {type:'bar',label:'Поступления от продаж',data:upto(M.sales),backgroundColor:'#2563eb',borderWidth:0,order:3,barPercentage:.78,categoryPercentage:.72},
-      {type:'bar',label:'Операционные затраты',data:upto(M.oper),backgroundColor:'#dc262688',borderColor:'#dc2626',borderWidth:1,order:2,barPercentage:.78,categoryPercentage:.72},
-      {type:'line',label:'Остаток на счете',data:upto(M.close),borderColor:'#141824',backgroundColor:'#141824',
-       borderWidth:2,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2,tension:.25,order:1,yAxisID:'y'}
+    data:{labels:M.months,datasets:[
+      {type:'bar',label:'Поступления от продаж',data:M.sales,backgroundColor:'#2563eb',borderWidth:0,order:3,barPercentage:.78,categoryPercentage:.72},
+      {type:'bar',label:'Собственные затраты',data:M.own,backgroundColor:'#dc262688',borderColor:'#dc2626',borderWidth:1,order:2,barPercentage:.78,categoryPercentage:.72},
+      {type:'line',label:'Остаток на конец',data:M.close,borderColor:'#141824',backgroundColor:'#141824',
+       borderWidth:2,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2,tension:.25,order:1}
     ]},
-    options:{responsive:true,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{labels:{color:'#4a5168',font:{size:11,family:"'JetBrains Mono',monospace"},boxWidth:12,boxHeight:3,padding:14}},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#4a5168',font:{size:10.5,family:"'JetBrains Mono',monospace"},boxWidth:12,boxHeight:3,padding:14}},
         tooltip:{backgroundColor:'#fff',borderColor:'#e4e7ef',borderWidth:1,titleColor:'#141824',bodyColor:'#4a5168',
           padding:12,titleFont:{family:"'Golos Text',sans-serif"},bodyFont:{family:"'JetBrains Mono',monospace",size:11},
           callbacks:{label:c=>` ${c.dataset.label}: ${fmtN(c.parsed.y)} руб.`,
-            afterBody:it=>{const k=it[0].dataIndex;const g=M.sales[k]-M.oper[k];
-              return['──────────────',` Разрыв: ${fmtN(g)} руб.`,` Покрытие: ${(M.sales[k]/M.oper[k]*100).toFixed(0)}%`];}}}},
+            afterBody:it=>{const k=it[0].dataIndex;
+              return['──────────────',` Покрытие: ${(M.sales[k]/M.own[k]*100).toFixed(0)}%`,
+                     ` Изменение за месяц: ${fmtN(chg(k))} руб.`];}}}},
       scales:{x:{grid:{display:false},ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"}}},
         y:{grid:{color:'#eef0f5'},border:{display:false},ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"},callback:v=>fmt(v)}}}}
   });
 
-  // --- сценарии безубыточности ---
-  const P=[2,3,4,5]; // июн-сен по индексам
-  const fix=P.reduce((a,k)=>a+(M.oper[k]-M.raw[k]),0)/P.length;
-  const gpM=5941180/4, grossM=10787910/4, marg=5941180/10787910;
-  const need=fix/marg, cutv=fix-gpM;
-  const haveR=grossM, needR=need, trackR=Math.max(haveR,needR);
-  const haveC=fix,    keepC=gpM;
+  // ---------- безубыточность (кассовая логика) ----------
+  const P=[2,3,4,5], np=P.length, av=a=>P.reduce((x,k)=>x+a[k],0)/np;
+  const salesM=av(M.sales), ownM=av(M.own), rawM=av(M.raw), fixM=ownM-rawM;
+  const rawShare=rawM/salesM, needS=fixM/(1-rawShare), cutF=ownM-salesM;
   document.getElementById('scnGrid').innerHTML=`
     <div class="scn" style="border-top-color:var(--opt)">
       <div class="scn-tag">Путь 1 — рост продаж</div>
-      <div class="scn-sub">Выручка gross в месяц, при которой валовая прибыль покроет постоянные затраты</div>
-      <div class="scn-val" style="color:var(--opt)">${fmt(needR)}</div>
-      <div class="scn-delta" style="color:var(--red)">+${(needR/haveR*100-100).toFixed(0)}% к текущим</div>
+      <div class="scn-sub">Сколько должно поступать от продаж в месяц, чтобы закрыть собственные затраты</div>
+      <div class="scn-val" style="color:var(--opt)">${fmt(needS)}</div>
+      <div class="scn-delta" style="color:var(--red)">+${(needS/salesM*100-100).toFixed(0)}% к текущим</div>
       <div class="scn-bar">
-        <div class="scn-track"><div class="scn-have" style="width:${haveR/trackR*100}%;background:var(--opt)"></div></div>
-        <div class="scn-mark" style="left:${needR/trackR*100}%"></div>
+        <div class="scn-track"><div class="scn-have" style="width:${salesM/needS*100}%;background:var(--opt)"></div></div>
+        <div class="scn-mark" style="left:100%"></div>
       </div>
-      <div class="scn-cap"><span>сейчас <b>${fmt(haveR)}</b></span><span>нужно <b>${fmt(needR)}</b></span></div>
+      <div class="scn-cap"><span>сейчас <b>${fmt(salesM)}</b></span><span>нужно <b>${fmt(needS)}</b></span></div>
     </div>
     <div class="scn" style="border-top-color:var(--wb)">
       <div class="scn-tag">Путь 2 — сокращение затрат</div>
-      <div class="scn-sub">На столько постоянные затраты превышают валовую прибыль при текущих продажах</div>
-      <div class="scn-val" style="color:var(--wb)">${fmt(cutv)}</div>
-      <div class="scn-delta" style="color:var(--red)">−${(cutv/haveC*100).toFixed(0)}% постоянных затрат</div>
+      <div class="scn-sub">На столько собственные затраты превышают поступления от продаж</div>
+      <div class="scn-val" style="color:var(--wb)">${fmt(cutF)}</div>
+      <div class="scn-delta" style="color:var(--red)">−${(cutF/fixM*100).toFixed(0)}% постоянных затрат</div>
       <div class="scn-bar">
-        <div class="scn-track"><div class="scn-have" style="width:${keepC/haveC*100}%;background:var(--wb)"></div></div>
+        <div class="scn-track"><div class="scn-have" style="width:${(fixM-cutF)/fixM*100}%;background:var(--wb)"></div></div>
         <div class="scn-mark" style="left:100%"></div>
       </div>
-      <div class="scn-cap"><span>можно <b>${fmt(keepC)}</b></span><span>сейчас <b>${fmt(haveC)}</b></span></div>
+      <div class="scn-cap"><span>можно <b>${fmt(fixM-cutF)}</b></span><span>сейчас <b>${fmt(fixM)}</b></span></div>
     </div>`;
-  const netM=7043591/4;
   document.getElementById('scnNote').innerHTML=
     `<div class="chain">
-       <div class="chain-t">Как считается, в среднем за месяц (июнь–сентябрь)</div>
-       <div class="chain-r"><span>Выручка gross</span><b>${fmtN(grossM)}</b></div>
-       <div class="chain-r"><span>минус удержания ОЗОН и WB</span><b style="color:var(--red)">−${fmtN(grossM-netM)}</b></div>
-       <div class="chain-r"><span>Поступило на счет</span><b>${fmtN(netM)}</b></div>
-       <div class="chain-r"><span>минус себестоимость и агентские</span><b style="color:var(--red)">−${fmtN(netM-gpM)}</b></div>
-       <div class="chain-r sum"><span>Валовая прибыль</span><b>${fmtN(gpM)}</b></div>
-       <div class="chain-r"><span>минус постоянные затраты (без сырья)</span><b style="color:var(--red)">−${fmtN(fix)}</b></div>
-       <div class="chain-r sum"><span>Дефицит покрытия</span><b style="color:var(--red)">${fmtN(gpM-fix)}</b></div>
+       <div class="chain-t">В среднем за месяц, июнь–сентябрь</div>
+       <div class="chain-r"><span>Поступило от продаж</span><b>${fmtN(salesM)}</b></div>
+       <div class="chain-r"><span>минус сырье и материалы</span><b style="color:var(--red)">−${fmtN(rawM)}</b></div>
+       <div class="chain-r"><span>минус постоянные затраты (ФОТ, аренда, прочее)</span><b style="color:var(--red)">−${fmtN(fixM)}</b></div>
+       <div class="chain-r sum"><span>Дефицит по собственным деньгам</span><b style="color:var(--red)">${fmtN(salesM-ownM)}</b></div>
      </div>
-     <div style="margin-top:12px;">Сырье не входит в постоянные затраты — оно уже учтено в себестоимости, иначе двойной счет.</div>`;
+     <div style="margin-top:12px;">Грант в расчете не участвует: он приходит и рубль в рубль уходит на зарплаты по гранту
+     (в среднем ${fmtN(M.grantAvg)} руб./мес). Когда грант закончится, вместе с ним уйдут и эти зарплаты — на дефицит это не повлияет.</div>`;
 
-  // --- таблица ДДС ---
-  const openBal=1963198;                      // остаток на начало апреля
-  const chg=k=>M.inflow[k]-M.oper[k]-M.debt[k];
+  // ---------- таблица ----------
   document.getElementById('moneyTbl').innerHTML=`
     <table class="cash"><thead>
-      <tr class="grp">
-        <th></th>
-        <th colspan="5" class="g-in">Поступило</th>
-        <th colspan="2" class="g-out">Потрачено</th>
-        <th colspan="3" class="g-res">Результат месяца</th>
-      </tr>
-      <tr>
-        <th>Месяц</th>
-        <th class="b-in">Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th><th>Всего</th>
-        <th class="b-out">Операц. затраты</th><th>Погашение долгов</th>
-        <th class="b-res">Изменение</th><th>Остаток на конец</th><th>Покрытие</th>
-      </tr>
+      <tr class="grp"><th></th><th colspan="4" class="g-in">Поступило своих денег</th>
+        <th colspan="2" class="g-out">Потрачено</th><th colspan="3" class="g-res">Результат месяца</th></tr>
+      <tr><th>Месяц</th>
+        <th class="b-in">Продажи</th><th>Займы</th><th>Прочее</th><th>Всего</th>
+        <th class="b-out">Собств. затраты</th><th>Погашение долгов</th>
+        <th class="b-res">Изменение</th><th>Остаток на конец</th><th>Покрытие</th></tr>
     </thead><tbody>
-      ${upto(M.months).map((m,k)=>{const c=chg(k),cv=M.sales[k]/M.oper[k]*100;return `<tr>
+      ${M.months.map((m,k)=>{const c=chg(k),cv=M.sales[k]/M.own[k]*100;return `<tr>
         <td>${m}</td>
         <td class="b-in">${fmtN(M.sales[k])}</td>
-        <td>${fmtN(M.grant[k])}</td>
         <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td>
         <td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
-        <td style="font-weight:600">${fmtN(M.inflow[k])}</td>
-        <td class="b-out" style="color:#dc2626">${fmtN(M.oper[k])}</td>
+        <td style="font-weight:600">${fmtN(inflow(k))}</td>
+        <td class="b-out" style="color:#dc2626">${fmtN(M.own[k])}</td>
         <td style="color:#dc2626">${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
         <td class="b-res" style="color:${c<0?'#dc2626':'#059669'};font-weight:600">${c>0?'+':''}${fmtN(c)}</td>
         <td style="font-weight:600">${fmtN(M.close[k])}</td>
-        <td><span class="mp ${cv>=100?'mp-hi':cv>=70?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
-      <tr class="total-row">
-        <td>Итого</td>
-        <td class="b-in">${fmtN(s(upto(M.sales)))}</td>
-        <td>${fmtN(s(upto(M.grant)))}</td>
-        <td>${fmtN(s(upto(M.loans)))}</td>
-        <td>${fmtN(s(upto(M.other)))}</td>
-        <td>${fmtN(s(upto(M.inflow)))}</td>
-        <td class="b-out" style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td>
-        <td style="color:#dc2626">${fmtN(s(upto(M.debt)))}</td>
-        <td class="b-res" style="color:#dc2626">${fmtN(s(upto(M.inflow))-s(upto(M.oper))-s(upto(M.debt)))}</td>
-        <td>${fmtN(last.close)}</td>
-        <td><span class="mp ${mpc(s(upto(M.sales))/s(upto(M.oper))*100)}">${(s(upto(M.sales))/s(upto(M.oper))*100).toFixed(0)}%</span></td></tr>
+        <td><span class="mp ${cv>=100?'mp-hi':cv>=85?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
+      <tr class="total-row"><td>Итого</td>
+        <td class="b-in">${fmtN(s(M.sales))}</td><td>${fmtN(s(M.loans))}</td><td>${fmtN(s(M.other))}</td>
+        <td>${fmtN(s(M.sales)+s(M.loans)+s(M.other))}</td>
+        <td class="b-out" style="color:#dc2626">${fmtN(s(M.own))}</td>
+        <td style="color:#dc2626">${fmtN(s(M.debt))}</td>
+        <td class="b-res" style="color:#dc2626">${fmtN(s(M.sales)+s(M.loans)+s(M.other)-s(M.own)-s(M.debt))}</td>
+        <td>${fmtN(M.close[i])}</td>
+        <td><span class="mp ${mpc(s(M.sales)/s(M.own)*100)}">${(s(M.sales)/s(M.own)*100).toFixed(0)}%</span></td></tr>
     </tbody></table>
     <div class="note">
-      Каждая строка сходится: остаток предыдущего месяца + «Всего» − «Операц. затраты» − «Погашение долгов» = «Остаток на конец».
-      На начало апреля на счете было ${fmtN(openBal)} руб.<br>
-      «Покрытие» — продажи к операционным затратам, без гранта и займов: показывает, окупает ли себя сама деятельность.<br>
-      Потоки — по закрытым месяцам. Остаток — срез на последний день месяца, зависит от дат платежей;
-      оперативный остаток на сегодня в чате бухгалтерии.
-      Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
+      Каждая строка сходится: остаток предыдущего месяца + «Всего» − «Собств. затраты» − «Погашение долгов» = «Остаток на конец».
+      На начало апреля на счете было ${fmtN(M.openBal)} руб.<br>
+      «Собств. затраты» — операционные за вычетом зарплат по гранту; грант и эти зарплаты исключены с обеих сторон, они транзитные.
+      «Прочее» — возврат займа от НовиСтем.<br>
+      «Покрытие» — продажи к собственным затратам: окупает ли себя деятельность без займов и возвратов.
+      Остаток — срез на последний день месяца; оперативный остаток в чате бухгалтерии.
     </div>`;
 
-  // --- дебиторка ---
+  // ---------- дебиторка ----------
   const ref=new Date(AR.asof);
-  const rows=AR.rows.map(r=>{const d=new Date(r.due);const od=Math.round((ref-d)/864e5);return{...r,od};})
-                    .sort((a,b)=>b.od-a.od);
+  const rows=AR.rows.map(r=>{const d=new Date(r.due);return{...r,od:Math.round((ref-d)/864e5)};}).sort((a,b)=>b.od-a.od);
   const overdue=rows.filter(r=>r.od>0), odSum=s(overdue.map(r=>r.sum));
   document.getElementById('arTbl').innerHTML=`
     <table><thead><tr>
       <th>Контрагент</th><th style="text-align:left">Счет</th><th style="text-align:left">Срок оплаты</th>
-      <th>Сумма, руб.</th><th>Статус</th>
-    </tr></thead><tbody>
+      <th>Сумма, руб.</th><th>Статус</th></tr></thead><tbody>
       ${rows.map(r=>`<tr>
         <td>${r.cp}</td>
         <td style="text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--muted)">${r.inv}</td>
