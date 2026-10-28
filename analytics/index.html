@@ -502,10 +502,9 @@ const OZ = {
 //          реестр дебиторки (на 24.09.2026)
 // =============================================================
 const MONEY = {
-  // closed — число закрытых месяцев. Потоковые метрики считаются только по ним;
-  // остаток на счете берется актуальный (cashNow), иначе картина ликвидности искажается.
+  // closed — число закрытых месяцев. Раздел считается только по ним:
+  // оперативный остаток живет в чате бухгалтерии, здесь — месячный срез.
   closed: 6,
-  cashNow: 426770, cashNowDate: '22.10',
   months: ['Апр','Май','Июн','Июл','Авг','Сен','Окт*'],
   sales:  [1808305,2085262,1920484,1694752,2246807,1918071,827893],
   grant:  [499357,466547,470464,475132,471168,487439,381217],
@@ -982,16 +981,21 @@ function renderOzon(){
         {label:'FBO',               data:oz.fbo,        backgroundColor:'#0891b288',borderColor:'#0891b2',borderWidth:1,stack:'s'},
         {label:'Реклама',           data:oz.adv,        backgroundColor:'#be185d88',borderColor:'#be185d',borderWidth:1,stack:'s'},
         {label:'Прочее',            data:oz.other,      backgroundColor:'#6b728088',borderColor:'#6b7280',borderWidth:1,stack:'s'},
-        {label:'Выплачено',         data:oz.payout,     backgroundColor:'#05966933',borderColor:'#059669',borderWidth:2,stack:'s'}
+        {label:'Выплачено',         data:oz.payout,     backgroundColor:'#05966933',borderColor:'#059669',borderWidth:2,stack:'s'},
+        {type:'line',label:'Продано, шт', data:oz.units, yAxisID:'y1', borderColor:'#141824',
+         backgroundColor:'#141824', borderWidth:2, pointRadius:3, pointBackgroundColor:'#fff',
+         pointBorderWidth:2, tension:.25, order:0}
       ]
     },
     options:{
       responsive:true,interaction:{mode:'index'},
       plugins:{
-        legend:{labels:{color:'#8890a8',font:{size:10},boxWidth:10,padding:10}},
+        legend:{labels:{color:'#4a5168',font:{size:10.5,family:"'JetBrains Mono',monospace"},boxWidth:12,boxHeight:3,padding:12}},
         tooltip:{backgroundColor:'#fff',borderColor:'#e3e8f0',borderWidth:1,titleColor:'#1a1e2e',bodyColor:'#4a5168',padding:12,
           callbacks:{
-            label:c=>` ${c.dataset.label}: ${fmtN(c.parsed.y)} руб.`,
+            label:c=>c.dataset.yAxisID==='y1'
+              ? ` ${c.dataset.label}: ${fmtN(c.parsed.y)} шт`
+              : ` ${c.dataset.label}: ${fmtN(c.parsed.y)} руб.`,
             afterBody:items=>{
               const g=oz.gross[items[0].dataIndex];
               const p=oz.payout[items[0].dataIndex];
@@ -1002,8 +1006,12 @@ function renderOzon(){
         }
       },
       scales:{
-        x:{stacked:true,grid:{display:false},ticks:{color:'#8890a8',font:{size:10}}},
-        y:{stacked:true,grid:{color:'#f0f3fa'},ticks:{color:'#8890a8',callback:v=>fmt(v)}}
+        x:{stacked:true,grid:{display:false},ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"}}},
+        y:{stacked:true,grid:{color:'#eef0f5'},border:{display:false},
+           ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"},callback:v=>fmt(v)}},
+        y1:{position:'right',grid:{display:false},border:{display:false},beginAtZero:true,
+            title:{display:true,text:'шт',color:'#8b92a6',font:{size:9,family:"'JetBrains Mono',monospace"}},
+            ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"},callback:v=>fmtN(v)}}
       }
     }
   });
@@ -1059,6 +1067,10 @@ function renderMoney(){
   const lastName=mName[M.months[i]]||M.months[i];
   const last={sales:M.sales[i],oper:M.oper[i],close:M.close[i],gap:M.sales[i]-M.oper[i]};
   const cover=last.sales/last.oper*100;
+  const gaps=[], from=Math.max(0,n-3);
+  for(let k=from;k<n;k++) gaps.push(M.oper[k]-M.sales[k]);   // разрыв (+ = затраты выше)
+  const avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
+  const runway=avgGap>0?last.close/avgGap:null;
   const arTotal=s(AR.rows.map(r=>r.sum))+AR.mp;
 
   // --- шкала покрытия ---
@@ -1077,13 +1089,19 @@ function renderMoney(){
     <div class="scale-lbl" style="left:${goal}%;color:var(--text);font-weight:600;">100% — безубыточность</div>
     <div class="scale-val" style="left:${pos}%;color:${col}">${cover.toFixed(0)}%</div>`;
   document.getElementById('gaugeFoot').innerHTML=
-    `Показатели потока — за ${lastName}, последний закрытый месяц. Остаток на счете — текущий, на ${M.cashNowDate}: <b>${fmtN(M.cashNow)} руб.</b>`;
+    `Раздел считается по закрытым месяцам: последний — ${lastName}. Запас по кассе — остаток на конец месяца
+     (<b>${fmtN(last.close)} руб.</b>), деленный на средний разрыв трех месяцев (<b>${fmtN(avgGap)} руб./мес</b>).
+     Оперативный остаток на сегодня — в чате бухгалтерии.`;
 
   // --- KPI ---
+  document.getElementById('moneyKpi').classList.add('six');
   document.getElementById('moneyKpi').innerHTML=[
-    {l:'Остаток на счете', v:fmt(M.cashNow), s:'на '+M.cashNowDate+', текущий', c:M.cashNow<1000000?'#dc2626':'#059669'},
-    {l:'Поступило от продаж', v:fmt(last.sales), s:'за '+lastName, c:'#2563eb'},
-    {l:'Операционные затраты', v:fmt(last.oper), s:'за '+lastName, c:'#7c3aed'},
+    {l:'Запас по кассе', v:runway?runway.toFixed(1).replace('.',',')+' мес':'—',
+     s:runway?'при разрыве '+fmt(avgGap)+'/мес':'разрыва нет',
+     c:!runway?'#059669':runway<2?'#dc2626':runway<4?'#d97706':'#059669'},
+    {l:'Остаток на конец мес.', v:fmt(last.close), s:'на конец '+lastName.slice(0,-1)+'я, руб.', c:'#2563eb'},
+    {l:'Поступило от продаж', v:fmt(last.sales), s:'за '+lastName, c:'#7c3aed'},
+    {l:'Операционные затраты', v:fmt(last.oper), s:'за '+lastName, c:'#be185d'},
     {l:'Разрыв месяца', v:fmt(Math.abs(last.gap)), s:last.gap<0?'затраты выше продаж':'профицит', c:'#dc2626'},
     {l:'Дебиторская задолж.', v:fmt(arTotal), s:'на 24.09, руб.', c:'#d97706'}
   ].map(k=>`<div class="kpi-card">
@@ -1163,11 +1181,11 @@ function renderMoney(){
       <tr class="total-row">
         <td>Итого</td><td>${fmtN(s(upto(M.sales)))}</td><td>${fmtN(s(upto(M.grant)))}</td><td>${fmtN(s(upto(M.loans)))}</td>
         <td>${fmtN(s(upto(M.other)))}</td><td style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td><td>${fmtN(s(upto(M.debt)))}</td>
-        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(M.cashNow)}</td>
+        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(last.close)}</td>
         <td><span class="mp ${mpc(s(upto(M.sales))/s(upto(M.oper))*100)}">${(s(upto(M.sales))/s(upto(M.oper))*100).toFixed(0)}%</span></td></tr>
     </tbody></table>
     <div class="note">Потоки показаны по закрытым месяцам — текущий месяц добавляется после его закрытия, чтобы неполные данные не искажали динамику.
-    Остаток в строке «Итого» — фактический на ${M.cashNowDate}, он изменился после закрытия ${lastName}.
+    Остаток в строке «Итого» — на конец ${lastName.slice(0,-1)}я.
     Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
     В исходном файле годовая колонка ИТОГО занижает затраты на 2,05 млн руб. из-за неполных формул — здесь использованы помесячные данные.</div>`;
 
