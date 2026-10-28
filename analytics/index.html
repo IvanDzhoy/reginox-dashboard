@@ -4,103 +4,200 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Регинокс - Дашборд продаж 2025-2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
-  --bg:#f4f6fb;--surface:#fff;--surface2:#f0f3fa;
-  --border:#e3e8f0;--border2:#c8d0e4;
-  --text:#1a1e2e;--text2:#4a5168;--muted:#8890a8;
+  --bg:#f5f6f9;--surface:#fff;--surface2:#f1f3f7;
+  --border:#e4e7ef;--border2:#ccd2e0;--hair:#eef0f5;
+  --text:#141824;--text2:#4a5168;--muted:#8b92a6;
   --opt:#2563eb;--wb:#7c3aed;--ya:#d97706;--oz:#059669;
-  --red:#dc2626;--amber:#f59e0b;--green:#059669;
-  --sh:0 1px 4px rgba(0,0,0,.07),0 2px 10px rgba(0,0,0,.04);
+  --red:#dc2626;--amber:#d97706;--green:#059669;
+  --sans:'Golos Text',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;
+  -webkit-font-smoothing:antialiased;font-weight:400;}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
 .layout{display:flex;min-height:100vh;}
-.sidebar{width:214px;min-width:214px;background:var(--surface);border-right:1px solid var(--border);padding:22px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.main{flex:1;padding:24px 28px;min-width:0;overflow:hidden;}
-.logo{padding:0 18px 16px;border-bottom:1px solid var(--border);margin-bottom:14px;}
-.logo-name{font-size:18px;font-weight:800;color:var(--opt);letter-spacing:-.5px;}
-.logo-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:0 18px;margin:10px 0 4px;}
-.nav-item{display:flex;align-items:center;gap:8px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
-.nav-item:hover{background:var(--surface2);color:var(--text);}
-.nav-item.active{background:#eff4ff;color:var(--opt);border-left-color:var(--opt);font-weight:600;}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
-.page-title{font-size:20px;font-weight:800;letter-spacing:-.3px;}
-.period-pills{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);padding:3px;border-radius:8px;}
-.pill{padding:5px 13px;border-radius:5px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
-.pill.active{background:var(--opt);color:#fff;}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar{width:228px;min-width:228px;background:var(--surface);border-right:1px solid var(--border);
+  padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{padding:0 22px 20px;border-bottom:1px solid var(--hair);margin-bottom:20px;}
+.logo-name{font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.logo-sub{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:5px;
+  text-transform:uppercase;letter-spacing:.1em;}
+.nav-section{font-family:var(--mono);font-size:9px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--muted);padding:0 22px;margin:4px 0 8px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 22px;font-size:13.5px;font-weight:500;
+  color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:color .14s,border-color .14s;}
+.nav-idx{font-family:var(--mono);font-size:10px;color:var(--muted);transition:color .14s;}
+.nav-item:hover{color:var(--text);}
+.nav-item:hover .nav-idx{color:var(--text2);}
+.nav-item.active{color:var(--opt);border-left-color:var(--opt);font-weight:600;}
+.nav-item.active .nav-idx{color:var(--opt);}
+.nav-foot{margin-top:auto;padding:16px 22px 0;border-top:1px solid var(--hair);
+  font-family:var(--mono);font-size:9px;color:var(--muted);line-height:1.7;letter-spacing:.04em;}
+
+/* ---------- MAIN ---------- */
+.main{flex:1;padding:28px 32px 48px;min-width:0;overflow:hidden;}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;
+  flex-wrap:wrap;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.page-title{font-size:23px;font-weight:800;letter-spacing:-.025em;line-height:1.1;}
+.page-kicker{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.13em;
+  color:var(--muted);margin-bottom:7px;}
+.period-pills{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.pill{padding:7px 14px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all .14s;border-right:1px solid var(--border);}
+.pill:last-child{border-right:none;}
+.pill.active{background:var(--opt);color:#fff;font-weight:600;}
 .pill:hover:not(.active){background:var(--surface2);color:var(--text);}
-.upd-tag{font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:5px 11px;border-radius:6px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);}
-.chart-card{padding:18px 20px;margin-bottom:16px;}
-.table-card{padding:18px 20px;margin-bottom:16px;overflow-x:auto;}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
-.kpi-card{padding:16px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--sh);}
-.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px;}
-.kpi-val{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
-.kpi-sub{font-size:11px;color:var(--muted);}
-/* Channel cards */
-.ch-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
-.ch-card{padding:16px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid;box-shadow:var(--sh);}
-.ch-name{font-size:12px;font-weight:700;margin-bottom:10px;}
-.ch-gross{font-size:18px;font-weight:800;margin-bottom:2px;}
-.ch-sub{font-size:10px;color:var(--muted);margin-bottom:10px;}
-.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
-.ch-mini-lbl{font-size:10px;color:var(--muted);}
-.ch-mini-val{font-size:13px;font-weight:700;}
-.bar-wrap{height:4px;background:var(--surface2);border-radius:2px;}
-.bar-fill{height:4px;border-radius:2px;}
-/* Chart toggle */
-.ctabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);padding:2px;border-radius:6px;}
-.ctab{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
-.ctab.active{background:var(--opt);color:#fff;}
-/* Products */
-.prod-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
-.prod-card{padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid;box-shadow:var(--sh);}
-.prod-name{font-size:12px;font-weight:700;margin-bottom:8px;}
-.prod-rev{font-size:16px;font-weight:800;margin-bottom:2px;}
-.prod-lbl{font-size:10px;color:var(--muted);}
-.prod-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0;}
-/* Insights */
-.ins-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-.ins-card{padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid;box-shadow:var(--sh);}
-.ins-title{font-size:12px;font-weight:700;margin-bottom:4px;}
-.ins-text{font-size:11px;color:var(--text2);line-height:1.55;}
-/* Table */
+.upd-tag{font-family:var(--mono);font-size:10.5px;color:var(--text2);background:var(--surface);
+  border:1px solid var(--border);padding:7px 12px;border-radius:6px;letter-spacing:.02em;}
+.upd-tag b{font-weight:600;color:var(--text);}
+
+/* ---------- CARDS ---------- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.chart-card{padding:22px 24px;margin-bottom:18px;}
+.table-card{padding:22px 24px;margin-bottom:18px;overflow-x:auto;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;
+  padding-bottom:12px;border-bottom:1px solid var(--hair);}
+.sec-title{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.13em;color:var(--text2);}
+
+/* ---------- KPI ---------- */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.kpi-card{padding:18px 20px;border-right:1px solid var(--hair);}
+.kpi-card:last-child{border-right:none;}
+.kpi-label{font-family:var(--mono);font-size:9px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
+.kpi-val{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.03em;
+  margin-bottom:5px;font-variant-numeric:tabular-nums;}
+.kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* ---------- CHANNEL / PRODUCT CARDS ---------- */
+.ch-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.ch-card{padding:18px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);
+  border-top:2px solid;}
+.ch-name{font-size:13px;font-weight:700;margin-bottom:12px;letter-spacing:-.01em;}
+.ch-gross{font-family:var(--mono);font-size:19px;font-weight:600;margin-bottom:3px;letter-spacing:-.02em;}
+.ch-sub{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-bottom:14px;letter-spacing:.03em;}
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.ch-mini-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:3px;}
+.ch-mini-val{font-family:var(--mono);font-size:13.5px;font-weight:600;}
+.bar-wrap{height:3px;background:var(--surface2);border-radius:0;}
+.bar-fill{height:3px;border-radius:0;}
+.prod-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px;}
+.prod-card{padding:16px 18px;border-radius:8px;background:var(--surface);border:1px solid var(--border);
+  border-top:2px solid;}
+.prod-name{font-size:13px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em;}
+.prod-rev{font-family:var(--mono);font-size:17px;font-weight:600;margin-bottom:3px;letter-spacing:-.02em;}
+.prod-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.prod-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+
+/* ---------- INSIGHTS ---------- */
+.ins-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.ins-card{padding:16px 18px;border-radius:8px;background:var(--surface);border:1px solid var(--border);
+  border-left:2px solid;}
+.ins-title{font-size:12.5px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em;}
+.ins-text{font-size:11.5px;color:var(--text2);line-height:1.6;}
+
+/* ---------- TABLE ---------- */
 table{width:100%;border-collapse:collapse;font-size:13px;}
-th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:7px 10px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;}
-th:first-child{text-align:left;}
-td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;color:var(--text);}
-td:first-child{text-align:left;font-weight:500;}
+th{font-family:var(--mono);font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);padding:0 12px 10px;text-align:right;border-bottom:1px solid var(--border2);white-space:nowrap;}
+th:first-child{text-align:left;padding-left:0;}
+th:last-child{padding-right:0;}
+td{font-family:var(--mono);font-size:12.5px;padding:9px 12px;border-bottom:1px solid var(--hair);
+  text-align:right;color:var(--text);font-variant-numeric:tabular-nums;}
+td:first-child{text-align:left;font-family:var(--sans);font-size:13px;font-weight:500;padding-left:0;}
+td:last-child{padding-right:0;}
 tr:last-child td{border-bottom:none;}
-tr.total-row td{font-weight:700;background:var(--surface2);border-top:2px solid var(--border2);}
-tr:not(.total-row):hover td{background:#f7f9ff;}
-.mp{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;}
-.mp-hi{background:#dcfce7;color:#15803d;}
-.mp-md{background:#fef9c3;color:#854d0e;}
-.mp-lo{background:#fee2e2;color:#991b1b;}
-/* Two-col */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
-/* CP */
-.cp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
+tr.total-row td{font-weight:700;border-top:1px solid var(--border2);border-bottom:none;padding-top:11px;}
+tr:not(.total-row):hover td{background:var(--surface2);}
+.mp{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-size:10.5px;font-weight:600;}
+.mp-hi{background:#e7f6ee;color:#0f6f45;}
+.mp-md{background:#fdf5e3;color:#8a5a08;}
+.mp-lo{background:#fdeaea;color:#a81f1f;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+
+/* ---------- CP LIST ---------- */
+.cp-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);}
 .cp-row:last-child{border-bottom:none;}
-.cp-rank{width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;}
-.cp-nm{flex:1;font-size:12px;font-weight:500;}
-.cp-bar-w{width:70px;height:5px;background:var(--surface2);border-radius:3px;flex-shrink:0;}
-.cp-bar{height:5px;border-radius:3px;}
-.cp-amt{font-size:12px;font-weight:700;min-width:80px;text-align:right;}
-.cp-sh{font-size:11px;color:var(--muted);min-width:35px;text-align:right;}
+.cp-rank{width:20px;height:20px;border-radius:3px;font-family:var(--mono);font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;}
+.cp-nm{flex:1;font-size:12.5px;font-weight:500;}
+.cp-bar-w{width:72px;height:3px;background:var(--surface2);flex-shrink:0;}
+.cp-bar{height:3px;}
+.cp-amt{font-family:var(--mono);font-size:12.5px;font-weight:600;min-width:86px;text-align:right;}
+.cp-sh{font-family:var(--mono);font-size:10.5px;color:var(--muted);min-width:40px;text-align:right;}
+
+/* ---------- MONEY PAGE ---------- */
+.gauge-card{padding:24px;margin-bottom:18px;background:var(--surface);
+  border:1px solid var(--border);border-radius:8px;}
+.gauge-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap;}
+.gauge-lead{font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.45;}
+.gauge-lead b{font-family:var(--mono);font-weight:700;}
+.gauge-date{font-family:var(--mono);font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
+.scale{position:relative;height:50px;margin:0 2px;}
+.scale-track{position:absolute;top:18px;left:0;right:0;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.scale-fill{position:absolute;top:0;left:0;height:6px;border-radius:3px 0 0 3px;}
+.scale-ticks{position:absolute;top:18px;left:0;right:0;height:6px;}
+.scale-tick{position:absolute;top:-5px;width:1px;height:16px;background:var(--border2);}
+.scale-goal{position:absolute;top:-9px;width:2px;height:24px;background:var(--text);}
+.scale-lbl{position:absolute;top:30px;font-family:var(--mono);font-size:9px;color:var(--muted);
+  transform:translateX(-50%);white-space:nowrap;letter-spacing:.04em;}
+.scale-val{position:absolute;top:-22px;transform:translateX(-50%);font-family:var(--mono);
+  font-size:13px;font-weight:700;white-space:nowrap;}
+.scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.scn{padding:20px 22px;border-radius:8px;background:var(--surface);border:1px solid var(--border);border-top:2px solid;}
+.scn-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin-bottom:12px;}
+.scn-val{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em;margin-bottom:4px;}
+.scn-delta{font-family:var(--mono);font-size:12px;font-weight:600;margin-bottom:12px;}
+.scn-txt{font-size:12px;color:var(--text2);line-height:1.6;}
+.money-flags{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.flag{padding:16px 18px;border-right:1px solid var(--hair);}
+.flag:last-child{border-right:none;}
+.flag-lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin-bottom:8px;}
+.flag-val{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.02em;}
+
+/* ---------- MISC ---------- */
 .page{display:none;}
-.page.active{display:block;}
-.note{font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
-.warn-bar{background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#854d0e;}
-@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(3,1fr);}.ch-cards{grid-template-columns:repeat(2,1fr);}.prod-cards{grid-template-columns:repeat(3,1fr);}.ins-row{grid-template-columns:1fr 1fr;}}
-@media(max-width:800px){.sidebar{display:none;}.main{padding:14px;}.kpi-row{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}}
+.page.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:none;}}
+.note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--hair);line-height:1.7;letter-spacing:.02em;}
+.warn-bar{background:#fdfaf0;border:1px solid #f0e2bd;border-left:2px solid var(--ya);border-radius:6px;
+  padding:12px 16px;margin-bottom:18px;font-size:12px;color:#7a5a12;line-height:1.55;}
+.bridge{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;
+  margin-bottom:18px;font-size:13px;line-height:1.75;color:var(--text2);}
+.bridge b{font-family:var(--mono);font-weight:700;color:var(--text);font-size:13px;}
+.bridge .bridge-lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);display:block;margin-bottom:9px;}
+.ctabs{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.ctab{padding:6px 12px;font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all .14s;border-right:1px solid var(--border);}
+.ctab:last-child{border-right:none;}
+.ctab.active{background:var(--opt);color:#fff;font-weight:600;}
+.ctab:hover:not(.active){background:var(--surface2);color:var(--text);}
+*:focus-visible{outline:2px solid var(--opt);outline-offset:2px;}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(3,1fr);}.ch-cards{grid-template-columns:repeat(2,1fr);}
+  .prod-cards{grid-template-columns:repeat(3,1fr);}.ins-row{grid-template-columns:1fr 1fr;}
+  .money-flags{grid-template-columns:1fr 1fr;}
+  .kpi-card:nth-child(3n){border-right:none;}}
+@media(max-width:800px){.sidebar{display:none;}.main{padding:16px;}.kpi-row{grid-template-columns:1fr 1fr;}
+  .two-col,.scn-grid{grid-template-columns:1fr;}.kpi-card{border-right:none;border-bottom:1px solid var(--hair);}
+  .page-title{font-size:19px;}}
 </style>
 </head>
 <body>
@@ -110,16 +207,25 @@ tr:not(.total-row):hover td{background:#f7f9ff;}
     <div class="logo-name">Регинокс</div>
     <div class="logo-sub">Стэм Реновацио - аналитика</div>
   </div>
-  <div class="nav-section">Аналитика</div>
-  <div class="nav-item active" onclick="showPage('overview')"><span>📊</span>Обзор</div>
-  <div class="nav-item" onclick="showPage('channels')"><span>📈</span>Каналы</div>
-  <div class="nav-item" onclick="showPage('products')"><span>🧪</span>Продукты</div>
-  <div class="nav-item" onclick="showPage('clients')"><span>🤝</span>Контрагенты</div>
-  <div class="nav-item" onclick="showPage('ozon')"><span>🛒</span>ОЗОН детально</div>
+  <div class="nav-section">Разделы</div>
+  <div class="nav-item active" onclick="showPage('overview')"><span class="nav-idx">01</span>Обзор</div>
+  <div class="nav-item" onclick="showPage('channels')"><span class="nav-idx">02</span>Каналы</div>
+  <div class="nav-item" onclick="showPage('products')"><span class="nav-idx">03</span>Продукты</div>
+  <div class="nav-item" onclick="showPage('clients')"><span class="nav-idx">04</span>Контрагенты</div>
+  <div class="nav-item" onclick="showPage('money')"><span class="nav-idx">05</span>Деньги</div>
+  <div class="nav-item" onclick="showPage('ozon')"><span class="nav-idx">06</span>ОЗОН детально</div>
+  <div class="nav-foot">
+    Продажи — 23.10.2026<br>
+    Финансы — 22.10.2026<br>
+    Дебиторка — 24.09.2026
+  </div>
 </aside>
 <main class="main">
 <div class="topbar">
-  <div class="page-title" id="pageTitle">Обзор продаж</div>
+  <div>
+    <div class="page-kicker" id="pageKicker">Раздел 01</div>
+    <div class="page-title" id="pageTitle">Обзор продаж</div>
+  </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <div class="period-pills">
       <div class="pill" onclick="setPeriod('2025')">2025</div>
@@ -133,6 +239,7 @@ tr:not(.total-row):hover td{background:#f7f9ff;}
 <!-- OVERVIEW -->
 <div class="page active" id="page-overview">
   <div class="kpi-row" id="kpiRow"></div>
+  <div class="bridge" id="bridgeNote"></div>
   <div class="card chart-card">
     <div class="card-hdr">
       <div class="sec-title">Выручка по месяцам — по каналам</div>
@@ -202,6 +309,53 @@ tr:not(.total-row):hover td{background:#f7f9ff;}
 </div>
 
 <!-- OZON -->
+<!-- MONEY -->
+<div class="page" id="page-money">
+  <div class="warn-bar">
+    Данные этого раздела берутся из файла поступлений и расходов и из реестра дебиторской задолженности.
+    Их даты отличаются от даты выгрузки продаж, поэтому цифры не сходятся с другими разделами напрямую.
+    Даты каждого источника указаны в левом нижнем углу.
+  </div>
+
+  <div class="gauge-card">
+    <div class="gauge-top">
+      <div class="gauge-lead" id="gaugeLead"></div>
+      <div class="gauge-date" id="gaugeDate"></div>
+    </div>
+    <div class="scale" id="gaugeScale"></div>
+  </div>
+
+  <div class="kpi-row" id="moneyKpi"></div>
+  <div class="money-flags" id="moneyFlags"></div>
+
+  <div class="card chart-card">
+    <div class="card-hdr">
+      <div class="sec-title">Поступления, затраты и остаток на счете</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Столбцы — обороты месяца, линия — остаток на конец</div>
+    </div>
+    <canvas id="moneyChart" height="160"></canvas>
+  </div>
+
+  <div class="card chart-card" style="padding-bottom:18px;">
+    <div class="card-hdr"><div class="sec-title">Что нужно, чтобы выйти в ноль по кассе</div></div>
+    <div class="scn-grid" id="scnGrid"></div>
+    <div class="note" id="scnNote"></div>
+  </div>
+
+  <div class="card table-card">
+    <div class="card-hdr"><div class="sec-title">Движение денежных средств по месяцам</div></div>
+    <div id="moneyTbl"></div>
+  </div>
+
+  <div class="card table-card">
+    <div class="card-hdr">
+      <div class="sec-title">Дебиторская задолженность</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">на 24.09.2026</div>
+    </div>
+    <div id="arTbl"></div>
+  </div>
+</div>
+
 <div class="page" id="page-ozon">
   <div class="kpi-row" id="ozKpi"></div>
   <div class="card chart-card">
@@ -342,6 +496,44 @@ const OZ = {
     wh:        [50.8,50.0,50.2,56.2,59.5,60.5,61.4,61.6,65.4,62.4]
   }
 };
+// =============================================================
+// ДЕНЬГИ — источник: «Поступления Расходы» (на 22.10.2026),
+//          реестр дебиторки (на 24.09.2026)
+// =============================================================
+const MONEY = {
+  months: ['Апр','Май','Июн','Июл','Авг','Сен','Окт*'],
+  sales:  [1808305,2085262,1920484,1694752,2246807,1918071,827893],
+  grant:  [499357,466547,470464,475132,471168,487439,381217],
+  loans:  [1500000,1500000,1500000,1000000,0,0,0],
+  other:  [0,168408,157989,500285,768872,629479,280000],
+  inflow: [3807661,4220217,4048937,3670169,3486847,3034989,1489110],
+  oper:   [2035311,2670165,2758769,2545337,2784779,2911135,2446859],
+  fot:    [1089411,1717099,1511599,1526439,1827104,1884203,1905609],
+  admin:  [374071,519854,441442,516807,465183,326551,347411],
+  raw:    [332178,110532,617133,315064,302133,352667,10356],
+  otherop:[239651,322680,188594,187026,190358,347714,183483],
+  debt:   [3391900,1150684,1498646,1100775,0,0,0],
+  close:  [343648,743016,534539,558596,1260665,1384519,426770]
+};
+
+// Дебиторка на 24.09.2026
+const AR = {
+  asof:'2026-09-24',
+  rows:[
+    {cp:'ООО ТК Ярвет',      inv:'№48 от 12.08', due:'2026-09-29', sum:549640},
+    {cp:'ООО ТК Ярвет',      inv:'№52 от 26.08', due:'2026-10-12', sum:321664},
+    {cp:'ООО ТК Ярвет',      inv:'№54 от 09.09', due:'2026-10-26', sum:476784},
+    {cp:'ООО ТК Ярвет',      inv:'№55 от 24.09', due:'2026-11-10', sum:480205},
+    {cp:'ООО Сибагро Трейд', inv:'№56 от 15.09', due:'2026-10-31', sum:84060},
+    {cp:'ООО АС-Маркет',     inv:'№55 от 24.09', due:'2026-11-07', sum:65380},
+    {cp:'ООО ЦИВиР',         inv:'№55 от 09.09', due:'2026-10-10', sum:4260},
+    {cp:'ИП Липина',         inv:'№39 от 09.06', due:'2026-07-09', sum:7100},
+    {cp:'ИП Химанина',       inv:'№97 от 08.12.25', due:'2026-01-07', sum:6175},
+    {cp:'ИП Кара',           inv:'№21 от 06.04', due:'2026-05-07', sum:2720}
+  ],
+  mp:442483
+};
+
 
 // =============================================================
 // STATE
@@ -409,7 +601,7 @@ function renderKPI(){
   const kpis=[
     {lbl:'Выручка (gross)',    val:fmt(totalGross), sub:'все каналы, руб.',        color:'#2563eb'},
     {lbl:'Поступило на счет',  val:fmt(totalNet),   sub:'факт и оценка нетто',    color:'#7c3aed'},
-    {lbl:'Валовая прибыль',    val:fmt(totalGP),    sub:'после COGS + комиссий',  color:'#059669'},
+    {lbl:'Вал. прибыль до опер. затрат', val:fmt(totalGP), sub:'после COGS и комиссий, до ФОТ и аренды', color:'#059669'},
     {lbl:'Маржа GP',           val:margin.toFixed(1)+'%', sub:'от gross выручки', color:margin>=60?'#059669':margin>=45?'#d97706':'#dc2626'},
     {lbl:'Единиц продано',     val:fmtN(units),     sub:'все SKU, шт.',           color:'#0891b2'}
   ];
@@ -419,6 +611,15 @@ function renderKPI(){
       <div class="kpi-val" style="color:${k.color}">${k.val}</div>
       <div class="kpi-sub">${k.sub}</div>
     </div>`).join('');
+
+  const bn=document.getElementById('bridgeNote');
+  if(period==='2026'){
+    bn.style.display='';
+    bn.innerHTML=`<span class="bridge-lbl">Как это связано с деньгами</span>
+      Из <b>${fmt(totalGross)}</b> оборота на счет поступило <b>${fmt(totalNet)}</b> — остальное удержали маркетплейсы.
+      Операционные затраты (ФОТ, аренда, логистика) за апрель–октябрь составили <b>${fmt(s(MONEY.oper))}</b> при поступлениях от продаж <b>${fmt(s(MONEY.sales))}</b>.
+      Остаток на счете на 22.10 — <b>${fmt(MONEY.close[MONEY.close.length-1])}</b>. Подробно — в разделе «Деньги».`;
+  } else { bn.style.display='none'; }
 }
 
 // =============================================================
@@ -846,6 +1047,149 @@ function renderOzon(){
 }
 
 // =============================================================
+// MONEY PAGE
+// =============================================================
+function renderMoney(){
+  const M=MONEY, n=M.months.length, i=n-1;
+  const last={sales:M.sales[i],oper:M.oper[i],close:M.close[i],gap:M.sales[i]-M.oper[i]};
+  const cover=last.sales/last.oper*100;
+  const arTotal=s(AR.rows.map(r=>r.sum))+AR.mp;
+
+  // --- шкала покрытия ---
+  const mx=120, pos=Math.min(cover,mx)/mx*100, goal=100/mx*100;
+  const col=cover>=100?'var(--green)':cover>=70?'var(--ya)':'var(--red)';
+  document.getElementById('gaugeLead').innerHTML=
+    `Продажи покрывают <b style="color:${col}">${cover.toFixed(0)}%</b> операционных затрат месяца`;
+  document.getElementById('gaugeDate').textContent='Октябрь, на 22.10';
+  document.getElementById('gaugeScale').innerHTML=`
+    <div class="scale-track"><div class="scale-fill" style="width:${pos}%;background:${col}"></div></div>
+    <div class="scale-ticks">
+      ${[0,25,50,75,100].map(t=>`<div class="scale-tick" style="left:${t/mx*100}%"></div>`).join('')}
+      <div class="scale-goal" style="left:${goal}%"></div>
+    </div>
+    ${[0,50].map(t=>`<div class="scale-lbl" style="left:${t/mx*100}%">${t}%</div>`).join('')}
+    <div class="scale-lbl" style="left:${goal}%;color:var(--text);font-weight:600;">100% — безубыточность</div>
+    <div class="scale-val" style="left:${pos}%;color:${col}">${cover.toFixed(0)}%</div>`;
+
+  // --- KPI ---
+  document.getElementById('moneyKpi').innerHTML=[
+    {l:'Остаток на счете', v:fmt(last.close), s:'на 22.10, руб.', c:last.close<1000000?'#dc2626':'#059669'},
+    {l:'Поступило от продаж', v:fmt(last.sales), s:'за октябрь', c:'#2563eb'},
+    {l:'Операционные затраты', v:fmt(last.oper), s:'за октябрь', c:'#7c3aed'},
+    {l:'Разрыв месяца', v:fmt(Math.abs(last.gap)), s:last.gap<0?'затраты выше продаж':'профицит', c:'#dc2626'},
+    {l:'Дебиторская задолж.', v:fmt(arTotal), s:'на 24.09, руб.', c:'#d97706'}
+  ].map(k=>`<div class="kpi-card">
+    <div class="kpi-label">${k.l}</div>
+    <div class="kpi-val" style="color:${k.c}">${k.v}</div>
+    <div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  // --- флаги: структура затрат последнего месяца ---
+  const st=[['Оплата труда',M.fot[i],'#7c3aed'],['Админ. и общехоз.',M.admin[i],'#2563eb'],
+            ['Сырье и материалы',M.raw[i],'#059669'],['Прочие операционные',M.otherop[i],'#d97706']];
+  document.getElementById('moneyFlags').innerHTML=st.map(([l,v,c])=>`
+    <div class="flag">
+      <div class="flag-lbl">${l}</div>
+      <div class="flag-val" style="color:${c}">${fmt(v)}</div>
+      <div class="bar-wrap" style="margin-top:10px;"><div class="bar-fill" style="width:${v/last.oper*100}%;background:${c}"></div></div>
+      <div class="kpi-sub" style="margin-top:7px;font-family:var(--mono);font-size:10px;">${v/last.oper*100<1?'<1':(v/last.oper*100).toFixed(0)}% затрат</div>
+    </div>`).join('');
+
+  // --- график ---
+  if(charts.money) charts.money.destroy();
+  charts.money=new Chart(document.getElementById('moneyChart').getContext('2d'),{
+    data:{labels:M.months,datasets:[
+      {type:'bar',label:'Поступления от продаж',data:M.sales,backgroundColor:'#2563eb',borderWidth:0,order:3,barPercentage:.78,categoryPercentage:.72},
+      {type:'bar',label:'Операционные затраты',data:M.oper,backgroundColor:'#dc262688',borderColor:'#dc2626',borderWidth:1,order:2,barPercentage:.78,categoryPercentage:.72},
+      {type:'line',label:'Остаток на счете',data:M.close,borderColor:'#141824',backgroundColor:'#141824',
+       borderWidth:2,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2,tension:.25,order:1,yAxisID:'y'}
+    ]},
+    options:{responsive:true,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#4a5168',font:{size:11,family:"'JetBrains Mono',monospace"},boxWidth:12,boxHeight:3,padding:14}},
+        tooltip:{backgroundColor:'#fff',borderColor:'#e4e7ef',borderWidth:1,titleColor:'#141824',bodyColor:'#4a5168',
+          padding:12,titleFont:{family:"'Golos Text',sans-serif"},bodyFont:{family:"'JetBrains Mono',monospace",size:11},
+          callbacks:{label:c=>` ${c.dataset.label}: ${fmtN(c.parsed.y)} руб.`,
+            afterBody:it=>{const k=it[0].dataIndex;const g=M.sales[k]-M.oper[k];
+              return['──────────────',` Разрыв: ${fmtN(g)} руб.`,` Покрытие: ${(M.sales[k]/M.oper[k]*100).toFixed(0)}%`];}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"}}},
+        y:{grid:{color:'#eef0f5'},border:{display:false},ticks:{color:'#8b92a6',font:{size:10,family:"'JetBrains Mono',monospace"},callback:v=>fmt(v)}}}}
+  });
+
+  // --- сценарии безубыточности ---
+  const P=[2,3,4,5]; // июн-сен по индексам
+  const fix=P.reduce((a,k)=>a+(M.oper[k]-M.raw[k]),0)/P.length;
+  const gpM=5941180/4, grossM=10787910/4, marg=5941180/10787910;
+  const need=fix/marg, cut=fix-gpM;
+  document.getElementById('scnGrid').innerHTML=`
+    <div class="scn" style="border-top-color:var(--opt)">
+      <div class="scn-tag">Путь 1 — рост продаж</div>
+      <div class="scn-val" style="color:var(--opt)">${fmt(need)}</div>
+      <div class="scn-delta" style="color:var(--red)">+${(need/grossM*100-100).toFixed(0)}% к текущим ${fmt(grossM)}</div>
+      <div class="scn-txt">Столько нужно продавать в месяц, чтобы валовая прибыль покрыла постоянные затраты.
+      Лучший месяц года — апрель, ${fmt(3574998)}.</div>
+    </div>
+    <div class="scn" style="border-top-color:var(--wb)">
+      <div class="scn-tag">Путь 2 — сокращение затрат</div>
+      <div class="scn-val" style="color:var(--wb)">${fmt(cut)}</div>
+      <div class="scn-delta" style="color:var(--red)">−${(cut/fix*100).toFixed(0)}% постоянных затрат</div>
+      <div class="scn-txt">На столько нужно сократить постоянные затраты в месяц при текущем уровне продаж.
+      Оплата труда — ${(M.fot[i]/M.oper[i]*100).toFixed(0)}% затрат месяца.</div>
+    </div>`;
+  document.getElementById('scnNote').innerHTML=
+    `Расчет по периоду июнь–сентябрь: постоянные затраты ${fmtN(fix)} руб./мес (операционные за вычетом сырья),
+     валовая прибыль ${fmtN(gpM)} руб./мес, маржа ${(marg*100).toFixed(1)}%.
+     Дефицит покрытия — ${fmtN(fix-gpM)} руб./мес.`;
+
+  // --- таблица ДДС ---
+  document.getElementById('moneyTbl').innerHTML=`
+    <table><thead><tr>
+      <th>Месяц</th><th>Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th>
+      <th>Операц. затраты</th><th>Долги</th><th>Разрыв</th><th>Остаток</th><th>Покрытие</th>
+    </tr></thead><tbody>
+      ${M.months.map((m,k)=>{const g=M.sales[k]-M.oper[k],cv=M.sales[k]/M.oper[k]*100;return `<tr>
+        <td>${m}</td><td>${fmtN(M.sales[k])}</td><td>${fmtN(M.grant[k])}</td>
+        <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td><td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
+        <td style="color:#dc2626">${fmtN(M.oper[k])}</td><td>${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
+        <td style="color:${g<0?'#dc2626':'#059669'};font-weight:600">${fmtN(g)}</td>
+        <td style="font-weight:600">${fmtN(M.close[k])}</td>
+        <td><span class="mp ${cv>=100?'mp-hi':cv>=70?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
+      <tr class="total-row">
+        <td>Итого</td><td>${fmtN(s(M.sales))}</td><td>${fmtN(s(M.grant))}</td><td>${fmtN(s(M.loans))}</td>
+        <td>${fmtN(s(M.other))}</td><td style="color:#dc2626">${fmtN(s(M.oper))}</td><td>${fmtN(s(M.debt))}</td>
+        <td style="color:#dc2626">${fmtN(s(M.sales)-s(M.oper))}</td><td>${fmtN(M.close[i])}</td>
+        <td><span class="mp ${mpc(s(M.sales)/s(M.oper)*100)}">${(s(M.sales)/s(M.oper)*100).toFixed(0)}%</span></td></tr>
+    </tbody></table>
+    <div class="note">Источник — «Поступления Расходы» на 22.10.2026. Окт* — неполный месяц.
+    Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
+    В исходном файле годовая колонка ИТОГО занижает затраты на 2,05 млн руб. из-за неполных формул — здесь использованы помесячные данные.</div>`;
+
+  // --- дебиторка ---
+  const ref=new Date(AR.asof);
+  const rows=AR.rows.map(r=>{const d=new Date(r.due);const od=Math.round((ref-d)/864e5);return{...r,od};})
+                    .sort((a,b)=>b.od-a.od);
+  const overdue=rows.filter(r=>r.od>0), odSum=s(overdue.map(r=>r.sum));
+  document.getElementById('arTbl').innerHTML=`
+    <table><thead><tr>
+      <th>Контрагент</th><th style="text-align:left">Счет</th><th style="text-align:left">Срок оплаты</th>
+      <th>Сумма, руб.</th><th>Статус</th>
+    </tr></thead><tbody>
+      ${rows.map(r=>`<tr>
+        <td>${r.cp}</td>
+        <td style="text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--muted)">${r.inv}</td>
+        <td style="text-align:left">${r.due.split('-').reverse().join('.')}</td>
+        <td style="font-weight:600">${fmtN(r.sum)}</td>
+        <td><span class="mp ${r.od>60?'mp-lo':r.od>0?'mp-md':'mp-hi'}">${r.od>0?'просрочка '+r.od+' дн.':'в сроке'}</span></td>
+      </tr>`).join('')}
+      <tr><td>Маркетплейсы</td><td style="text-align:left;color:var(--muted);font-family:var(--mono);font-size:11.5px">6 позиций</td>
+        <td style="text-align:left">—</td><td style="font-weight:600">${fmtN(AR.mp)}</td>
+        <td><span class="mp mp-hi">в сроке</span></td></tr>
+      <tr class="total-row"><td>Итого</td><td></td><td></td><td>${fmtN(arTotal)}</td><td></td></tr>
+    </tbody></table>
+    <div class="note">Просрочено ${fmtN(odSum)} руб. (${(odSum/arTotal*100).toFixed(1)}% портфеля) по ${overdue.length} счетам.
+    Основная сумма — ${fmtN(s(rows.filter(r=>r.cp.includes('Ярвет')).map(r=>r.sum)))} руб. по ООО ТК Ярвет, сроки оплаты до 10.11.
+    Отсрочка по договору доходит до 45 дней: компания кредитует ключевого дистрибьютора при собственном дефиците кассы.</div>`;
+}
+
+// =============================================================
 // NAVIGATION
 // =============================================================
 function showPage(id){
@@ -855,8 +1199,14 @@ function showPage(id){
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.toggle('active', n.getAttribute('onclick')===`showPage('${id}')`);
   });
-  const titles={overview:'Обзор продаж',channels:'Каналы дистрибуции',products:'Продукты (SKU)',clients:'Контрагенты — опт',ozon:'ОЗОН — детальные начисления'};
+  const titles={overview:'Обзор продаж',channels:'Каналы дистрибуции',products:'Продукты (SKU)',clients:'Контрагенты — опт',money:'Деньги и ликвидность',ozon:'ОЗОН — детальные начисления'};
+  const idx={overview:'01',channels:'02',products:'03',clients:'04',money:'05',ozon:'06'};
   document.getElementById('pageTitle').textContent=titles[id]||'';
+  document.getElementById('pageKicker').textContent='Раздел '+(idx[id]||'');
+  document.querySelector('.upd-tag').innerHTML = id==='money'
+    ? 'Финансы на: <b>22.10.2026</b>' : 'Данные на: <b>23.10.2026</b>';
+  // период и SKU-фильтр к разделу «Деньги» не применяются
+  document.querySelector('.period-pills').style.display = id==='money' ? 'none' : '';
   renderPage();
 }
 
@@ -881,6 +1231,7 @@ function renderPage(){
   else if(activePage==='channels') renderChannels();
   else if(activePage==='products') renderProducts();
   else if(activePage==='clients')  renderClients();
+  else if(activePage==='money')    renderMoney();
   else if(activePage==='ozon')     renderOzon();
 }
 
