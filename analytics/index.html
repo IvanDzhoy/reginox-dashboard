@@ -140,6 +140,12 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .cp-sh{font-family:var(--mono);font-size:10.5px;color:var(--muted);min-width:40px;text-align:right;}
 
 /* ---------- MONEY PAGE ---------- */
+.chain{max-width:560px;}
+.chain-t{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
+.chain-r{display:flex;justify-content:space-between;gap:16px;padding:5px 0;font-family:var(--sans);font-size:12px;color:var(--text2);}
+.chain-r b{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);}
+.chain-r.sum{border-top:1px solid var(--border2);margin-top:3px;padding-top:7px;}
+.chain-r.sum span{font-weight:600;color:var(--text);}
 .scn-bar{position:relative;height:30px;margin:14px 0 8px;}
 .scn-track{position:absolute;top:10px;left:0;right:0;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
 .scn-have{position:absolute;top:0;left:0;height:10px;border-radius:5px 0 0 5px;}
@@ -148,6 +154,7 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .scn-cap b{color:var(--text);font-weight:600;}
 .scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .scn{padding:20px 22px;border-radius:8px;background:var(--surface);border:1px solid var(--border);border-top:2px solid;}
+.scn-sub{font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:14px;min-height:34px;}
 .scn-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
   color:var(--muted);margin-bottom:12px;}
 .scn-val{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em;margin-bottom:4px;}
@@ -303,7 +310,6 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 <!-- OZON -->
 <!-- MONEY -->
 <div class="page" id="page-money">
-  </div>
 
   <div class="kpi-row" id="moneyKpi"></div>
   <div class="money-flags" id="moneyFlags"></div>
@@ -1106,6 +1112,7 @@ function renderMoney(){
   document.getElementById('scnGrid').innerHTML=`
     <div class="scn" style="border-top-color:var(--opt)">
       <div class="scn-tag">Путь 1 — рост продаж</div>
+      <div class="scn-sub">Выручка gross в месяц, при которой валовая прибыль покроет постоянные затраты</div>
       <div class="scn-val" style="color:var(--opt)">${fmt(needR)}</div>
       <div class="scn-delta" style="color:var(--red)">+${(needR/haveR*100-100).toFixed(0)}% к текущим</div>
       <div class="scn-bar">
@@ -1116,6 +1123,7 @@ function renderMoney(){
     </div>
     <div class="scn" style="border-top-color:var(--wb)">
       <div class="scn-tag">Путь 2 — сокращение затрат</div>
+      <div class="scn-sub">На столько постоянные затраты превышают валовую прибыль при текущих продажах</div>
       <div class="scn-val" style="color:var(--wb)">${fmt(cutv)}</div>
       <div class="scn-delta" style="color:var(--red)">−${(cutv/haveC*100).toFixed(0)}% постоянных затрат</div>
       <div class="scn-bar">
@@ -1124,30 +1132,46 @@ function renderMoney(){
       </div>
       <div class="scn-cap"><span>можно <b>${fmt(keepC)}</b></span><span>сейчас <b>${fmt(haveC)}</b></span></div>
     </div>`;
+  const netM=7043591/4;
   document.getElementById('scnNote').innerHTML=
-    `Период расчета — июнь–сентябрь. Постоянные затраты — операционные за вычетом сырья. Маржа ${(marg*100).toFixed(1)}%.`;
+    `<div class="chain">
+       <div class="chain-t">Как считается, в среднем за месяц (июнь–сентябрь)</div>
+       <div class="chain-r"><span>Выручка gross</span><b>${fmtN(grossM)}</b></div>
+       <div class="chain-r"><span>минус удержания ОЗОН и WB</span><b style="color:var(--red)">−${fmtN(grossM-netM)}</b></div>
+       <div class="chain-r"><span>Поступило на счет</span><b>${fmtN(netM)}</b></div>
+       <div class="chain-r"><span>минус себестоимость и агентские</span><b style="color:var(--red)">−${fmtN(netM-gpM)}</b></div>
+       <div class="chain-r sum"><span>Валовая прибыль</span><b>${fmtN(gpM)}</b></div>
+       <div class="chain-r"><span>минус постоянные затраты (без сырья)</span><b style="color:var(--red)">−${fmtN(fix)}</b></div>
+       <div class="chain-r sum"><span>Дефицит покрытия</span><b style="color:var(--red)">${fmtN(gpM-fix)}</b></div>
+     </div>
+     <div style="margin-top:12px;">Сырье не входит в постоянные затраты — оно уже учтено в себестоимости, иначе двойной счет.</div>`;
 
   // --- таблица ДДС ---
   document.getElementById('moneyTbl').innerHTML=`
     <table><thead><tr>
       <th>Месяц</th><th>Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th>
-      <th>Операц. затраты</th><th>Долги</th><th>Разрыв</th><th>Остаток</th><th>Покрытие</th>
+      <th>Всего поступило</th><th>Операц. затраты</th><th>Долги</th><th>Разрыв</th>
+      <th>Остаток на конец</th><th>Покрытие</th>
     </tr></thead><tbody>
       ${upto(M.months).map((m,k)=>{const g=M.sales[k]-M.oper[k],cv=M.sales[k]/M.oper[k]*100;return `<tr>
         <td>${m}</td><td>${fmtN(M.sales[k])}</td><td>${fmtN(M.grant[k])}</td>
         <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td><td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
+        <td style="font-weight:600">${fmtN(M.inflow[k])}</td>
         <td style="color:#dc2626">${fmtN(M.oper[k])}</td><td>${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
         <td style="color:${g<0?'#dc2626':'#059669'};font-weight:600">${fmtN(g)}</td>
         <td style="font-weight:600">${fmtN(M.close[k])}</td>
         <td><span class="mp ${cv>=100?'mp-hi':cv>=70?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
       <tr class="total-row">
         <td>Итого</td><td>${fmtN(s(upto(M.sales)))}</td><td>${fmtN(s(upto(M.grant)))}</td><td>${fmtN(s(upto(M.loans)))}</td>
-        <td>${fmtN(s(upto(M.other)))}</td><td style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td><td>${fmtN(s(upto(M.debt)))}</td>
-        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(last.close)}</td>
+        <td>${fmtN(s(upto(M.other)))}</td><td style="font-weight:700">${fmtN(s(upto(M.inflow)))}</td>
+        <td style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td><td>${fmtN(s(upto(M.debt)))}</td>
+        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(last.close)}<span style="color:var(--muted);font-size:10px;"> на 30.09</span></td>
         <td><span class="mp ${mpc(s(upto(M.sales))/s(upto(M.oper))*100)}">${(s(upto(M.sales))/s(upto(M.oper))*100).toFixed(0)}%</span></td></tr>
     </tbody></table>
     <div class="note">Потоки показаны по закрытым месяцам — текущий месяц добавляется после его закрытия, чтобы неполные данные не искажали динамику.
-    Остаток в строке «Итого» — на конец ${lastName.slice(0,-1)}я.
+    Остаток — срез на последний день месяца, он зависит от того, на какую дату пришлись платежи.
+    В строке «Итого» стоит остаток на конец ${lastName.slice(0,-1)}я, а не сумма столбца.
+    Оперативный остаток на сегодня — в чате бухгалтерии.
     Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
     В исходном файле годовая колонка ИТОГО занижает затраты на 2,05 млн руб. из-за неполных формул — здесь использованы помесячные данные.</div>`;
 
