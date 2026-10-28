@@ -140,24 +140,12 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .cp-sh{font-family:var(--mono);font-size:10.5px;color:var(--muted);min-width:40px;text-align:right;}
 
 /* ---------- MONEY PAGE ---------- */
-.gauge-card{padding:24px;margin-bottom:18px;background:var(--surface);
-  border:1px solid var(--border);border-radius:8px;}
-.gauge-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap;}
-.gauge-lead{font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.45;}
-.gauge-lead b{font-family:var(--mono);font-weight:700;}
-.gauge-date{font-family:var(--mono);font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
-.scale{position:relative;height:50px;margin:0 2px;}
-.scale-track{position:absolute;top:18px;left:0;right:0;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-.scale-fill{position:absolute;top:0;left:0;height:6px;border-radius:3px 0 0 3px;}
-.scale-ticks{position:absolute;top:18px;left:0;right:0;height:6px;}
-.scale-tick{position:absolute;top:-5px;width:1px;height:16px;background:var(--border2);}
-.scale-goal{position:absolute;top:-9px;width:2px;height:24px;background:var(--text);}
-.scale-lbl{position:absolute;top:30px;font-family:var(--mono);font-size:9px;color:var(--muted);
-  transform:translateX(-50%);white-space:nowrap;letter-spacing:.04em;}
-.scale-val{position:absolute;top:-22px;transform:translateX(-50%);font-family:var(--mono);
-  font-size:13px;font-weight:700;white-space:nowrap;}
-.gauge-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--muted);line-height:1.6;}
-.gauge-foot b{font-family:var(--mono);color:var(--text);font-weight:600;}
+.scn-bar{position:relative;height:30px;margin:14px 0 8px;}
+.scn-track{position:absolute;top:10px;left:0;right:0;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+.scn-have{position:absolute;top:0;left:0;height:10px;border-radius:5px 0 0 5px;}
+.scn-mark{position:absolute;top:4px;width:2px;height:22px;background:var(--text);}
+.scn-cap{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.03em;}
+.scn-cap b{color:var(--text);font-weight:600;}
 .scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .scn{padding:20px 22px;border-radius:8px;background:var(--surface);border:1px solid var(--border);border-top:2px solid;}
 .scn-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
@@ -315,13 +303,6 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 <!-- OZON -->
 <!-- MONEY -->
 <div class="page" id="page-money">
-  <div class="gauge-card">
-    <div class="gauge-top">
-      <div class="gauge-lead" id="gaugeLead"></div>
-      <div class="gauge-date" id="gaugeDate"></div>
-    </div>
-    <div class="scale" id="gaugeScale"></div>
-    <div class="gauge-foot" id="gaugeFoot"></div>
   </div>
 
   <div class="kpi-row" id="moneyKpi"></div>
@@ -1067,38 +1048,13 @@ function renderMoney(){
   const lastName=mName[M.months[i]]||M.months[i];
   const last={sales:M.sales[i],oper:M.oper[i],close:M.close[i],gap:M.sales[i]-M.oper[i]};
   const cover=last.sales/last.oper*100;
-  const gaps=[], from=Math.max(0,n-3);
-  for(let k=from;k<n;k++) gaps.push(M.oper[k]-M.sales[k]);   // разрыв (+ = затраты выше)
-  const avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
-  const runway=avgGap>0?last.close/avgGap:null;
+  const covCol=cover>=100?'#059669':cover>=80?'#d97706':'#dc2626';
   const arTotal=s(AR.rows.map(r=>r.sum))+AR.mp;
-
-  // --- шкала покрытия ---
-  const mx=120, pos=Math.min(cover,mx)/mx*100, goal=100/mx*100;
-  const col=cover>=100?'var(--green)':cover>=70?'var(--ya)':'var(--red)';
-  document.getElementById('gaugeLead').innerHTML=
-    `Продажи покрывают <b style="color:${col}">${cover.toFixed(0)}%</b> операционных затрат месяца`;
-  document.getElementById('gaugeDate').textContent=lastName.toUpperCase()+' — последний закрытый месяц';
-  document.getElementById('gaugeScale').innerHTML=`
-    <div class="scale-track"><div class="scale-fill" style="width:${pos}%;background:${col}"></div></div>
-    <div class="scale-ticks">
-      ${[0,25,50,75,100].map(t=>`<div class="scale-tick" style="left:${t/mx*100}%"></div>`).join('')}
-      <div class="scale-goal" style="left:${goal}%"></div>
-    </div>
-    ${[0,50].map(t=>`<div class="scale-lbl" style="left:${t/mx*100}%">${t}%</div>`).join('')}
-    <div class="scale-lbl" style="left:${goal}%;color:var(--text);font-weight:600;">100% — безубыточность</div>
-    <div class="scale-val" style="left:${pos}%;color:${col}">${cover.toFixed(0)}%</div>`;
-  document.getElementById('gaugeFoot').innerHTML=
-    `Раздел считается по закрытым месяцам: последний — ${lastName}. Запас по кассе — остаток на конец месяца
-     (<b>${fmtN(last.close)} руб.</b>), деленный на средний разрыв трех месяцев (<b>${fmtN(avgGap)} руб./мес</b>).
-     Оперативный остаток на сегодня — в чате бухгалтерии.`;
 
   // --- KPI ---
   document.getElementById('moneyKpi').classList.add('six');
   document.getElementById('moneyKpi').innerHTML=[
-    {l:'Запас по кассе', v:runway?runway.toFixed(1).replace('.',',')+' мес':'—',
-     s:runway?'при разрыве '+fmt(avgGap)+'/мес':'разрыва нет',
-     c:!runway?'#059669':runway<2?'#dc2626':runway<4?'#d97706':'#059669'},
+    {l:'Покрытие затрат', v:cover.toFixed(0)+'%', s:'продажи к затратам '+lastName, c:covCol},
     {l:'Остаток на конец мес.', v:fmt(last.close), s:'на конец '+lastName.slice(0,-1)+'я, руб.', c:'#2563eb'},
     {l:'Поступило от продаж', v:fmt(last.sales), s:'за '+lastName, c:'#7c3aed'},
     {l:'Операционные затраты', v:fmt(last.oper), s:'за '+lastName, c:'#be185d'},
@@ -1144,26 +1100,32 @@ function renderMoney(){
   const P=[2,3,4,5]; // июн-сен по индексам
   const fix=P.reduce((a,k)=>a+(M.oper[k]-M.raw[k]),0)/P.length;
   const gpM=5941180/4, grossM=10787910/4, marg=5941180/10787910;
-  const need=fix/marg, cut=fix-gpM;
+  const need=fix/marg, cutv=fix-gpM;
+  const haveR=grossM, needR=need, trackR=Math.max(haveR,needR);
+  const haveC=fix,    keepC=gpM;
   document.getElementById('scnGrid').innerHTML=`
     <div class="scn" style="border-top-color:var(--opt)">
       <div class="scn-tag">Путь 1 — рост продаж</div>
-      <div class="scn-val" style="color:var(--opt)">${fmt(need)}</div>
-      <div class="scn-delta" style="color:var(--red)">+${(need/grossM*100-100).toFixed(0)}% к текущим ${fmt(grossM)}</div>
-      <div class="scn-txt">Столько нужно продавать в месяц, чтобы валовая прибыль покрыла постоянные затраты.
-      Лучший месяц года — апрель, ${fmt(3574998)}.</div>
+      <div class="scn-val" style="color:var(--opt)">${fmt(needR)}</div>
+      <div class="scn-delta" style="color:var(--red)">+${(needR/haveR*100-100).toFixed(0)}% к текущим</div>
+      <div class="scn-bar">
+        <div class="scn-track"><div class="scn-have" style="width:${haveR/trackR*100}%;background:var(--opt)"></div></div>
+        <div class="scn-mark" style="left:${needR/trackR*100}%"></div>
+      </div>
+      <div class="scn-cap"><span>сейчас <b>${fmt(haveR)}</b></span><span>нужно <b>${fmt(needR)}</b></span></div>
     </div>
     <div class="scn" style="border-top-color:var(--wb)">
       <div class="scn-tag">Путь 2 — сокращение затрат</div>
-      <div class="scn-val" style="color:var(--wb)">${fmt(cut)}</div>
-      <div class="scn-delta" style="color:var(--red)">−${(cut/fix*100).toFixed(0)}% постоянных затрат</div>
-      <div class="scn-txt">На столько нужно сократить постоянные затраты в месяц при текущем уровне продаж.
-      Оплата труда — ${(M.fot[i]/M.oper[i]*100).toFixed(0)}% затрат месяца.</div>
+      <div class="scn-val" style="color:var(--wb)">${fmt(cutv)}</div>
+      <div class="scn-delta" style="color:var(--red)">−${(cutv/haveC*100).toFixed(0)}% постоянных затрат</div>
+      <div class="scn-bar">
+        <div class="scn-track"><div class="scn-have" style="width:${keepC/haveC*100}%;background:var(--wb)"></div></div>
+        <div class="scn-mark" style="left:100%"></div>
+      </div>
+      <div class="scn-cap"><span>можно <b>${fmt(keepC)}</b></span><span>сейчас <b>${fmt(haveC)}</b></span></div>
     </div>`;
   document.getElementById('scnNote').innerHTML=
-    `Расчет по периоду июнь–сентябрь: постоянные затраты ${fmtN(fix)} руб./мес (операционные за вычетом сырья),
-     валовая прибыль ${fmtN(gpM)} руб./мес, маржа ${(marg*100).toFixed(1)}%.
-     Дефицит покрытия — ${fmtN(fix-gpM)} руб./мес.`;
+    `Период расчета — июнь–сентябрь. Постоянные затраты — операционные за вычетом сырья. Маржа ${(marg*100).toFixed(1)}%.`;
 
   // --- таблица ДДС ---
   document.getElementById('moneyTbl').innerHTML=`
