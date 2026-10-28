@@ -126,6 +126,11 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .mp-hi{background:#e7f6ee;color:#0f6f45;}
 .mp-md{background:#fdf5e3;color:#8a5a08;}
 .mp-lo{background:#fdeaea;color:#a81f1f;}
+table.cash th,table.cash td{padding-left:10px;padding-right:10px;}
+table.cash tr.grp th{font-size:8.5px;letter-spacing:.14em;padding-bottom:6px;border-bottom:none;text-align:center;}
+tr.grp th.g-in{color:var(--opt);}tr.grp th.g-out{color:var(--red);}tr.grp th.g-res{color:var(--text2);}
+table.cash .b-in,table.cash .b-out,table.cash .b-res{border-left:1px solid var(--border);}
+table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{border-left:1px solid var(--border);}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
 
 /* ---------- CP LIST ---------- */
@@ -1147,33 +1152,56 @@ function renderMoney(){
      <div style="margin-top:12px;">Сырье не входит в постоянные затраты — оно уже учтено в себестоимости, иначе двойной счет.</div>`;
 
   // --- таблица ДДС ---
+  const openBal=1963198;                      // остаток на начало апреля
+  const chg=k=>M.inflow[k]-M.oper[k]-M.debt[k];
   document.getElementById('moneyTbl').innerHTML=`
-    <table><thead><tr>
-      <th>Месяц</th><th>Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th>
-      <th>Всего поступило</th><th>Операц. затраты</th><th>Долги</th><th>Разрыв</th>
-      <th>Остаток на конец</th><th>Покрытие</th>
-    </tr></thead><tbody>
-      ${upto(M.months).map((m,k)=>{const g=M.sales[k]-M.oper[k],cv=M.sales[k]/M.oper[k]*100;return `<tr>
-        <td>${m}</td><td>${fmtN(M.sales[k])}</td><td>${fmtN(M.grant[k])}</td>
-        <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td><td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
+    <table class="cash"><thead>
+      <tr class="grp">
+        <th></th>
+        <th colspan="5" class="g-in">Поступило</th>
+        <th colspan="2" class="g-out">Потрачено</th>
+        <th colspan="3" class="g-res">Результат месяца</th>
+      </tr>
+      <tr>
+        <th>Месяц</th>
+        <th class="b-in">Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th><th>Всего</th>
+        <th class="b-out">Операц. затраты</th><th>Погашение долгов</th>
+        <th class="b-res">Изменение</th><th>Остаток на конец</th><th>Покрытие</th>
+      </tr>
+    </thead><tbody>
+      ${upto(M.months).map((m,k)=>{const c=chg(k),cv=M.sales[k]/M.oper[k]*100;return `<tr>
+        <td>${m}</td>
+        <td class="b-in">${fmtN(M.sales[k])}</td>
+        <td>${fmtN(M.grant[k])}</td>
+        <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td>
+        <td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
         <td style="font-weight:600">${fmtN(M.inflow[k])}</td>
-        <td style="color:#dc2626">${fmtN(M.oper[k])}</td><td>${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
-        <td style="color:${g<0?'#dc2626':'#059669'};font-weight:600">${fmtN(g)}</td>
+        <td class="b-out" style="color:#dc2626">${fmtN(M.oper[k])}</td>
+        <td style="color:#dc2626">${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
+        <td class="b-res" style="color:${c<0?'#dc2626':'#059669'};font-weight:600">${c>0?'+':''}${fmtN(c)}</td>
         <td style="font-weight:600">${fmtN(M.close[k])}</td>
         <td><span class="mp ${cv>=100?'mp-hi':cv>=70?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
       <tr class="total-row">
-        <td>Итого</td><td>${fmtN(s(upto(M.sales)))}</td><td>${fmtN(s(upto(M.grant)))}</td><td>${fmtN(s(upto(M.loans)))}</td>
-        <td>${fmtN(s(upto(M.other)))}</td><td style="font-weight:700">${fmtN(s(upto(M.inflow)))}</td>
-        <td style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td><td>${fmtN(s(upto(M.debt)))}</td>
-        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(last.close)}<span style="color:var(--muted);font-size:10px;"> на 30.09</span></td>
+        <td>Итого</td>
+        <td class="b-in">${fmtN(s(upto(M.sales)))}</td>
+        <td>${fmtN(s(upto(M.grant)))}</td>
+        <td>${fmtN(s(upto(M.loans)))}</td>
+        <td>${fmtN(s(upto(M.other)))}</td>
+        <td>${fmtN(s(upto(M.inflow)))}</td>
+        <td class="b-out" style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td>
+        <td style="color:#dc2626">${fmtN(s(upto(M.debt)))}</td>
+        <td class="b-res" style="color:#dc2626">${fmtN(s(upto(M.inflow))-s(upto(M.oper))-s(upto(M.debt)))}</td>
+        <td>${fmtN(last.close)}</td>
         <td><span class="mp ${mpc(s(upto(M.sales))/s(upto(M.oper))*100)}">${(s(upto(M.sales))/s(upto(M.oper))*100).toFixed(0)}%</span></td></tr>
     </tbody></table>
-    <div class="note">Потоки показаны по закрытым месяцам — текущий месяц добавляется после его закрытия, чтобы неполные данные не искажали динамику.
-    Остаток — срез на последний день месяца, он зависит от того, на какую дату пришлись платежи.
-    В строке «Итого» стоит остаток на конец ${lastName.slice(0,-1)}я, а не сумма столбца.
-    Оперативный остаток на сегодня — в чате бухгалтерии.
-    Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
-    В исходном файле годовая колонка ИТОГО занижает затраты на 2,05 млн руб. из-за неполных формул — здесь использованы помесячные данные.</div>`;
+    <div class="note">
+      Каждая строка сходится: остаток предыдущего месяца + «Всего» − «Операц. затраты» − «Погашение долгов» = «Остаток на конец».
+      На начало апреля на счете было ${fmtN(openBal)} руб.<br>
+      «Покрытие» — продажи к операционным затратам, без гранта и займов: показывает, окупает ли себя сама деятельность.<br>
+      Потоки — по закрытым месяцам. Остаток — срез на последний день месяца, зависит от дат платежей;
+      оперативный остаток на сегодня в чате бухгалтерии.
+      Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
+    </div>`;
 
   // --- дебиторка ---
   const ref=new Date(AR.asof);
