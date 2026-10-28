@@ -27,7 +27,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 /* ---------- SIDEBAR ---------- */
 .sidebar{width:228px;min-width:228px;background:var(--surface);border-right:1px solid var(--border);
   padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.logo{padding:0 22px 20px;border-bottom:1px solid var(--hair);margin-bottom:20px;}
+.back-link{display:flex;align-items:center;gap:7px;padding:0 22px 14px;font-family:var(--mono);
+  font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  text-decoration:none;transition:color .14s;}
+.back-link:hover{color:var(--opt);}
+.back-arrow{font-size:13px;line-height:1;transition:transform .14s;}
+.back-link:hover .back-arrow{transform:translateX(-2px);}
+.back-link.mob{display:none;}
+.logo{display:block;padding:0 22px 20px;border-bottom:1px solid var(--hair);margin-bottom:20px;
+  text-decoration:none;color:inherit;}
+.logo:hover .logo-name{color:var(--opt);}
+.logo-name{transition:color .14s;}
 .logo-name{font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
 .logo-sub{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:5px;
   text-transform:uppercase;letter-spacing:.1em;}
@@ -205,7 +215,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
   .prod-cards{grid-template-columns:repeat(3,1fr);}.ins-row{grid-template-columns:1fr 1fr;}
   .money-flags{grid-template-columns:1fr 1fr;}
   .kpi-card:nth-child(3n){border-right:none;}}
-@media(max-width:800px){.sidebar{display:none;}.main{padding:16px;}.kpi-row{grid-template-columns:1fr 1fr;}
+@media(max-width:800px){.sidebar{display:none;}.back-link.mob{display:flex;padding:0 0 10px;}.main{padding:16px;}.kpi-row{grid-template-columns:1fr 1fr;}
   .two-col,.scn-grid{grid-template-columns:1fr;}.kpi-card{border-right:none;border-bottom:1px solid var(--hair);}
   .page-title{font-size:19px;}}
 </style>
@@ -213,10 +223,13 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
 <body>
 <div class="layout">
 <aside class="sidebar">
-  <div class="logo">
+  <a class="back-link" href="../">
+    <span class="back-arrow">&#8592;</span>Все дашборды
+  </a>
+  <a class="logo" href="../">
     <div class="logo-name">Регинокс</div>
     <div class="logo-sub">Стэм Реновацио - аналитика</div>
-  </div>
+  </a>
   <div class="nav-section">Разделы</div>
   <div class="nav-item active" onclick="showPage('overview')"><span class="nav-idx">01</span>Обзор</div>
   <div class="nav-item" onclick="showPage('channels')"><span class="nav-idx">02</span>Каналы</div>
@@ -233,6 +246,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
 <main class="main">
 <div class="topbar">
   <div>
+    <a class="back-link mob" href="../"><span class="back-arrow">&#8592;</span>Все дашборды</a>
     <div class="page-kicker" id="pageKicker">Раздел 01</div>
     <div class="page-title" id="pageTitle">Обзор продаж</div>
   </div>
