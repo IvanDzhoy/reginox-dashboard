@@ -155,6 +155,8 @@ tr:not(.total-row):hover td{background:var(--surface2);}
   transform:translateX(-50%);white-space:nowrap;letter-spacing:.04em;}
 .scale-val{position:absolute;top:-22px;transform:translateX(-50%);font-family:var(--mono);
   font-size:13px;font-weight:700;white-space:nowrap;}
+.gauge-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--muted);line-height:1.6;}
+.gauge-foot b{font-family:var(--mono);color:var(--text);font-weight:600;}
 .scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .scn{padding:20px 22px;border-radius:8px;background:var(--surface);border:1px solid var(--border);border-top:2px solid;}
 .scn-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;
@@ -171,6 +173,8 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 .flag-val{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.02em;}
 
 /* ---------- MISC ---------- */
+.pie-wrap{position:relative;height:240px;margin:0 auto;max-width:760px;}
+.pie-wrap.sm{height:210px;max-width:560px;}
 .page{display:none;}
 .page.active{display:block;animation:fade .25s ease;}
 @keyframes fade{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:none;}}
@@ -239,7 +243,6 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 <!-- OVERVIEW -->
 <div class="page active" id="page-overview">
   <div class="kpi-row" id="kpiRow"></div>
-  <div class="bridge" id="bridgeNote"></div>
   <div class="card chart-card">
     <div class="card-hdr">
       <div class="sec-title">Выручка по месяцам — по каналам</div>
@@ -262,7 +265,7 @@ tr:not(.total-row):hover td{background:var(--surface2);}
   <div class="ch-cards" id="chCards"></div>
   <div class="card chart-card">
     <div class="card-hdr"><div class="sec-title">Доля каналов в gross выручке</div></div>
-    <canvas id="chPie" height="200"></canvas>
+    <div class="pie-wrap"><canvas id="chPie"></canvas></div>
   </div>
   <div class="card table-card">
     <div class="sec-title" style="margin-bottom:12px;">P&amp;L сводка по каналам</div>
@@ -276,11 +279,11 @@ tr:not(.total-row):hover td{background:var(--surface2);}
   <div class="two-col">
     <div class="card chart-card">
       <div class="sec-title" style="margin-bottom:12px;">Доля в выручке, %</div>
-      <canvas id="prodPie" height="240"></canvas>
+      <div class="pie-wrap sm"><canvas id="prodPie"></canvas></div>
     </div>
     <div class="card chart-card">
       <div class="sec-title" style="margin-bottom:12px;">Маржа до комиссий каналов, %</div>
-      <canvas id="prodMargin" height="240"></canvas>
+      <div class="pie-wrap sm"><canvas id="prodMargin"></canvas></div>
     </div>
   </div>
   <div class="card table-card">
@@ -299,7 +302,7 @@ tr:not(.total-row):hover td{background:var(--surface2);}
     </div>
     <div class="card chart-card">
       <div class="sec-title" style="margin-bottom:12px;">Распределение выручки</div>
-      <canvas id="cpPie" height="260"></canvas>
+      <div class="pie-wrap"><canvas id="cpPie"></canvas></div>
     </div>
   </div>
   <div class="card table-card">
@@ -311,18 +314,13 @@ tr:not(.total-row):hover td{background:var(--surface2);}
 <!-- OZON -->
 <!-- MONEY -->
 <div class="page" id="page-money">
-  <div class="warn-bar">
-    Данные этого раздела берутся из файла поступлений и расходов и из реестра дебиторской задолженности.
-    Их даты отличаются от даты выгрузки продаж, поэтому цифры не сходятся с другими разделами напрямую.
-    Даты каждого источника указаны в левом нижнем углу.
-  </div>
-
   <div class="gauge-card">
     <div class="gauge-top">
       <div class="gauge-lead" id="gaugeLead"></div>
       <div class="gauge-date" id="gaugeDate"></div>
     </div>
     <div class="scale" id="gaugeScale"></div>
+    <div class="gauge-foot" id="gaugeFoot"></div>
   </div>
 
   <div class="kpi-row" id="moneyKpi"></div>
@@ -501,6 +499,10 @@ const OZ = {
 //          реестр дебиторки (на 24.09.2026)
 // =============================================================
 const MONEY = {
+  // closed — число закрытых месяцев. Потоковые метрики считаются только по ним;
+  // остаток на счете берется актуальный (cashNow), иначе картина ликвидности искажается.
+  closed: 6,
+  cashNow: 426770, cashNowDate: '22.10',
   months: ['Апр','Май','Июн','Июл','Авг','Сен','Окт*'],
   sales:  [1808305,2085262,1920484,1694752,2246807,1918071,827893],
   grant:  [499357,466547,470464,475132,471168,487439,381217],
@@ -611,15 +613,6 @@ function renderKPI(){
       <div class="kpi-val" style="color:${k.color}">${k.val}</div>
       <div class="kpi-sub">${k.sub}</div>
     </div>`).join('');
-
-  const bn=document.getElementById('bridgeNote');
-  if(period==='2026'){
-    bn.style.display='';
-    bn.innerHTML=`<span class="bridge-lbl">Как это связано с деньгами</span>
-      Из <b>${fmt(totalGross)}</b> оборота на счет поступило <b>${fmt(totalNet)}</b> — остальное удержали маркетплейсы.
-      Операционные затраты (ФОТ, аренда, логистика) за апрель–октябрь составили <b>${fmt(s(MONEY.oper))}</b> при поступлениях от продаж <b>${fmt(s(MONEY.sales))}</b>.
-      Остаток на счете на 22.10 — <b>${fmt(MONEY.close[MONEY.close.length-1])}</b>. Подробно — в разделе «Деньги».`;
-  } else { bn.style.display='none'; }
 }
 
 // =============================================================
@@ -777,7 +770,7 @@ function renderChannels(){
       datasets:[{data:CH.map(ch=>t[ch].gross),backgroundColor:CH.map(ch=>CCL[ch]+'cc'),borderColor:CH.map(ch=>CCL[ch]),borderWidth:2}]
     },
     options:{
-      responsive:true,cutout:'60%',
+      responsive:true,maintainAspectRatio:false,cutout:'60%',
       plugins:{
         legend:{position:'right',labels:{color:'#4a5168',font:{size:12},padding:14,boxWidth:12}},
         tooltip:{backgroundColor:'#fff',borderColor:'#e3e8f0',borderWidth:1,titleColor:'#1a1e2e',bodyColor:'#4a5168',
@@ -847,7 +840,7 @@ function renderProducts(){
   charts.prodPie=new Chart(document.getElementById('prodPie').getContext('2d'),{
     type:'doughnut',
     data:{labels:skus.map(p=>p.name),datasets:[{data:skus.map(p=>p.rev),backgroundColor:skus.map(p=>p.color+'cc'),borderColor:skus.map(p=>p.color),borderWidth:2}]},
-    options:{responsive:true,cutout:'55%',plugins:{
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{
       legend:{position:'bottom',labels:{color:'#4a5168',font:{size:11},padding:10,boxWidth:10}},
       tooltip:{backgroundColor:'#fff',borderColor:'#e3e8f0',borderWidth:1,titleColor:'#1a1e2e',bodyColor:'#4a5168',
         callbacks:{label:c=>` ${c.label}: ${fmtN(c.raw)} руб. (${pct(c.raw,totalRev)})`}}
@@ -859,7 +852,7 @@ function renderProducts(){
     type:'bar',
     data:{labels:skus.map(p=>p.name),datasets:[{label:'Маржа GP, %',data:skus.map(p=>p.margin),backgroundColor:skus.map(p=>p.color+'99'),borderColor:skus.map(p=>p.color),borderWidth:2,borderRadius:4}]},
     options:{
-      indexAxis:'y',responsive:true,
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#e3e8f0',borderWidth:1,titleColor:'#1a1e2e',bodyColor:'#4a5168',
         callbacks:{label:c=>` Маржа: ${c.raw.toFixed(1)}%`}}},
       scales:{x:{max:100,ticks:{color:'#8890a8',callback:v=>v+'%'},grid:{color:'#f0f3fa'}},y:{ticks:{color:'#4a5168',font:{size:12}},grid:{display:false}}}
@@ -913,7 +906,7 @@ function renderClients(){
   charts.cpPie=new Chart(document.getElementById('cpPie').getContext('2d'),{
     type:'doughnut',
     data:{labels:cps.map(c=>c.name),datasets:[{data:cps.map(c=>c.rev),backgroundColor:cps.map((_,i)=>CPCOLORS[i%CPCOLORS.length]+'cc'),borderColor:cps.map((_,i)=>CPCOLORS[i%CPCOLORS.length]),borderWidth:2}]},
-    options:{responsive:true,cutout:'55%',plugins:{
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{
       legend:{display:false},
       tooltip:{backgroundColor:'#fff',borderColor:'#e3e8f0',borderWidth:1,titleColor:'#1a1e2e',bodyColor:'#4a5168',
         callbacks:{label:c=>` ${c.label}: ${fmtN(c.raw)} руб. (${pct(c.raw,totalRev)})`}}
@@ -1050,7 +1043,10 @@ function renderOzon(){
 // MONEY PAGE
 // =============================================================
 function renderMoney(){
-  const M=MONEY, n=M.months.length, i=n-1;
+  const M=MONEY, n=M.closed, i=n-1;              // i — последний ЗАКРЫТЫЙ месяц
+  const upto=a=>a.slice(0,n);                      // срез по закрытым месяцам
+  const mName={'Апр':'апрель','Май':'май','Июн':'июнь','Июл':'июль','Авг':'август','Сен':'сентябрь'};
+  const lastName=mName[M.months[i]]||M.months[i];
   const last={sales:M.sales[i],oper:M.oper[i],close:M.close[i],gap:M.sales[i]-M.oper[i]};
   const cover=last.sales/last.oper*100;
   const arTotal=s(AR.rows.map(r=>r.sum))+AR.mp;
@@ -1060,7 +1056,7 @@ function renderMoney(){
   const col=cover>=100?'var(--green)':cover>=70?'var(--ya)':'var(--red)';
   document.getElementById('gaugeLead').innerHTML=
     `Продажи покрывают <b style="color:${col}">${cover.toFixed(0)}%</b> операционных затрат месяца`;
-  document.getElementById('gaugeDate').textContent='Октябрь, на 22.10';
+  document.getElementById('gaugeDate').textContent=lastName.toUpperCase()+' — последний закрытый месяц';
   document.getElementById('gaugeScale').innerHTML=`
     <div class="scale-track"><div class="scale-fill" style="width:${pos}%;background:${col}"></div></div>
     <div class="scale-ticks">
@@ -1070,12 +1066,14 @@ function renderMoney(){
     ${[0,50].map(t=>`<div class="scale-lbl" style="left:${t/mx*100}%">${t}%</div>`).join('')}
     <div class="scale-lbl" style="left:${goal}%;color:var(--text);font-weight:600;">100% — безубыточность</div>
     <div class="scale-val" style="left:${pos}%;color:${col}">${cover.toFixed(0)}%</div>`;
+  document.getElementById('gaugeFoot').innerHTML=
+    `Показатели потока — за ${lastName}, последний закрытый месяц. Остаток на счете — текущий, на ${M.cashNowDate}: <b>${fmtN(M.cashNow)} руб.</b>`;
 
   // --- KPI ---
   document.getElementById('moneyKpi').innerHTML=[
-    {l:'Остаток на счете', v:fmt(last.close), s:'на 22.10, руб.', c:last.close<1000000?'#dc2626':'#059669'},
-    {l:'Поступило от продаж', v:fmt(last.sales), s:'за октябрь', c:'#2563eb'},
-    {l:'Операционные затраты', v:fmt(last.oper), s:'за октябрь', c:'#7c3aed'},
+    {l:'Остаток на счете', v:fmt(M.cashNow), s:'на '+M.cashNowDate+', текущий', c:M.cashNow<1000000?'#dc2626':'#059669'},
+    {l:'Поступило от продаж', v:fmt(last.sales), s:'за '+lastName, c:'#2563eb'},
+    {l:'Операционные затраты', v:fmt(last.oper), s:'за '+lastName, c:'#7c3aed'},
     {l:'Разрыв месяца', v:fmt(Math.abs(last.gap)), s:last.gap<0?'затраты выше продаж':'профицит', c:'#dc2626'},
     {l:'Дебиторская задолж.', v:fmt(arTotal), s:'на 24.09, руб.', c:'#d97706'}
   ].map(k=>`<div class="kpi-card">
@@ -1097,10 +1095,10 @@ function renderMoney(){
   // --- график ---
   if(charts.money) charts.money.destroy();
   charts.money=new Chart(document.getElementById('moneyChart').getContext('2d'),{
-    data:{labels:M.months,datasets:[
-      {type:'bar',label:'Поступления от продаж',data:M.sales,backgroundColor:'#2563eb',borderWidth:0,order:3,barPercentage:.78,categoryPercentage:.72},
-      {type:'bar',label:'Операционные затраты',data:M.oper,backgroundColor:'#dc262688',borderColor:'#dc2626',borderWidth:1,order:2,barPercentage:.78,categoryPercentage:.72},
-      {type:'line',label:'Остаток на счете',data:M.close,borderColor:'#141824',backgroundColor:'#141824',
+    data:{labels:upto(M.months),datasets:[
+      {type:'bar',label:'Поступления от продаж',data:upto(M.sales),backgroundColor:'#2563eb',borderWidth:0,order:3,barPercentage:.78,categoryPercentage:.72},
+      {type:'bar',label:'Операционные затраты',data:upto(M.oper),backgroundColor:'#dc262688',borderColor:'#dc2626',borderWidth:1,order:2,barPercentage:.78,categoryPercentage:.72},
+      {type:'line',label:'Остаток на счете',data:upto(M.close),borderColor:'#141824',backgroundColor:'#141824',
        borderWidth:2,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2,tension:.25,order:1,yAxisID:'y'}
     ]},
     options:{responsive:true,interaction:{mode:'index',intersect:false},
@@ -1145,7 +1143,7 @@ function renderMoney(){
       <th>Месяц</th><th>Продажи</th><th>Грант</th><th>Займы</th><th>Прочее</th>
       <th>Операц. затраты</th><th>Долги</th><th>Разрыв</th><th>Остаток</th><th>Покрытие</th>
     </tr></thead><tbody>
-      ${M.months.map((m,k)=>{const g=M.sales[k]-M.oper[k],cv=M.sales[k]/M.oper[k]*100;return `<tr>
+      ${upto(M.months).map((m,k)=>{const g=M.sales[k]-M.oper[k],cv=M.sales[k]/M.oper[k]*100;return `<tr>
         <td>${m}</td><td>${fmtN(M.sales[k])}</td><td>${fmtN(M.grant[k])}</td>
         <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td><td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
         <td style="color:#dc2626">${fmtN(M.oper[k])}</td><td>${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
@@ -1153,12 +1151,13 @@ function renderMoney(){
         <td style="font-weight:600">${fmtN(M.close[k])}</td>
         <td><span class="mp ${cv>=100?'mp-hi':cv>=70?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
       <tr class="total-row">
-        <td>Итого</td><td>${fmtN(s(M.sales))}</td><td>${fmtN(s(M.grant))}</td><td>${fmtN(s(M.loans))}</td>
-        <td>${fmtN(s(M.other))}</td><td style="color:#dc2626">${fmtN(s(M.oper))}</td><td>${fmtN(s(M.debt))}</td>
-        <td style="color:#dc2626">${fmtN(s(M.sales)-s(M.oper))}</td><td>${fmtN(M.close[i])}</td>
-        <td><span class="mp ${mpc(s(M.sales)/s(M.oper)*100)}">${(s(M.sales)/s(M.oper)*100).toFixed(0)}%</span></td></tr>
+        <td>Итого</td><td>${fmtN(s(upto(M.sales)))}</td><td>${fmtN(s(upto(M.grant)))}</td><td>${fmtN(s(upto(M.loans)))}</td>
+        <td>${fmtN(s(upto(M.other)))}</td><td style="color:#dc2626">${fmtN(s(upto(M.oper)))}</td><td>${fmtN(s(upto(M.debt)))}</td>
+        <td style="color:#dc2626">${fmtN(s(upto(M.sales))-s(upto(M.oper)))}</td><td>${fmtN(M.cashNow)}</td>
+        <td><span class="mp ${mpc(s(upto(M.sales))/s(upto(M.oper))*100)}">${(s(upto(M.sales))/s(upto(M.oper))*100).toFixed(0)}%</span></td></tr>
     </tbody></table>
-    <div class="note">Источник — «Поступления Расходы» на 22.10.2026. Окт* — неполный месяц.
+    <div class="note">Потоки показаны по закрытым месяцам — текущий месяц добавляется после его закрытия, чтобы неполные данные не искажали динамику.
+    Остаток в строке «Итого» — фактический на ${M.cashNowDate}, он изменился после закрытия ${lastName}.
     Апрель–июль закрывались займами, с августа заемное финансирование прекратилось.
     В исходном файле годовая колонка ИТОГО занижает затраты на 2,05 млн руб. из-за неполных формул — здесь использованы помесячные данные.</div>`;
 
