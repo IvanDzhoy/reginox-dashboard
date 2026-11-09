@@ -238,9 +238,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
   <div class="nav-item" onclick="showPage('money')"><span class="nav-idx">05</span>Деньги</div>
   <div class="nav-item" onclick="showPage('ozon')"><span class="nav-idx">06</span>ОЗОН детально</div>
   <div class="nav-foot">
-    Продажи — 23.10.2026<br>
-    Финансы — 22.10.2026<br>
-    Дебиторка — 24.09.2026
+    Все данные - 06.11.2026
   </div>
 </aside>
 <main class="main">
@@ -256,7 +254,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
       <div class="pill active" onclick="setPeriod('2026')">2026 YTD</div>
       <div class="pill" onclick="setPeriod('all')">2025 + 2026</div>
     </div>
-    <div class="upd-tag">Данные на: <b>23.10.2026</b></div>
+    <div class="upd-tag">Данные на: <b>06.11.2026</b></div>
   </div>
 </div>
 
@@ -265,7 +263,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
   <div class="kpi-row" id="kpiRow"></div>
   <div class="card chart-card">
     <div class="card-hdr">
-      <div class="sec-title">Выручка по месяцам — по каналам</div>
+      <div class="sec-title">Выручка по месяцам - по каналам</div>
       <div class="ctabs">
         <div class="ctab active" onclick="setChartM('gross',this)">Gross</div>
         <div class="ctab" onclick="setChartM('gp',this)">Вал. прибыль</div>
@@ -307,14 +305,14 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
     </div>
   </div>
   <div class="card table-card">
-    <div class="sec-title" style="margin-bottom:12px;">SKU — детализация</div>
+    <div class="sec-title" style="margin-bottom:12px;">SKU - детализация</div>
     <div id="prodTbl"></div>
   </div>
 </div>
 
 <!-- CLIENTS -->
 <div class="page" id="page-clients">
-  <div class="warn-bar"><b>Только оптовый канал.</b> Покупатели через маркетплейсы (ОЗОН, WB, Яндекс) обезличены — анализ в разделе «Каналы».</div>
+  <div class="warn-bar"><b>Только оптовый канал.</b> Покупатели через маркетплейсы (ОЗОН, WB, Яндекс) обезличены - анализ в разделе «Каналы».</div>
   <div class="two-col">
     <div class="card" style="padding:18px 20px;">
       <div class="sec-title" style="margin-bottom:12px;">ТОП контрагентов по выручке</div>
@@ -341,7 +339,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
   <div class="card chart-card">
     <div class="card-hdr">
       <div class="sec-title">Поступления, затраты и остаток на счете</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Столбцы — обороты месяца, линия — остаток на конец</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Столбцы - обороты месяца, линия - остаток на конец</div>
     </div>
     <div class="chart-box"><canvas id="moneyChart"></canvas></div>
   </div>
@@ -360,7 +358,7 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
   <div class="card table-card">
     <div class="card-hdr">
       <div class="sec-title">Дебиторская задолженность</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">на 24.09.2026</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">на 06.11.2026</div>
     </div>
     <div id="arTbl"></div>
   </div>
@@ -385,12 +383,12 @@ table.cash tr.grp th.g-in,table.cash tr.grp th.g-out,table.cash tr.grp th.g-res{
 </div>
 <script>
 // =============================================================
-// DATA — источник: PL_2025/2026_по_каналам.csv,
+// DATA - источник: PL_2025/2026_по_каналам.csv,
 //         PL_2025/2026_по_SKU.csv, Опт_по_контрагентам_2526.csv,
 //         ОЗОН_начисления_2526.csv
 // =============================================================
 const M25 = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
-const M26 = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт*'];
+const M26 = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя*'];
 
 const PL = {
   '2025':{
@@ -416,30 +414,22 @@ const PL = {
     }
   },
   '2026':{
-    opt:{
-      gross:[823624,708308,519665,1971379,1568745,1126920,1312380,972909,1151747,1029285],
-      net:  [823624,708308,519665,1971379,1568745,1126920,1312380,972909,1151747,1029285],
-      gp:   [692188,445865,446145,1316078,1069761,966536,974910,834505,987894,856503]
-    },
-    wb:{
-      gross:[196441,266989,271936,283092,244525,203450,236265,103253,174798,169768],
-      net:  [117865,160193,163162,169855,146715,122070,141759,61952,104879,101861],
-      gp:   [102829,139540,142152,147927,127811,106407,121397,52770,89756,87656]
-    },
+    opt:{gross:[823624,708308,519665,1971379,1568745,1126920,1312380,972909,1151747,1161570,65380],net:[823624,708308,519665,1971379,1568745,1126920,1312380,972909,1151747,1161570,65380],gp:[692188,445864,446145,1316078,1069761,966536,974910,834505,987894,971204,56511]},
+    wb:{gross:[196441,266989,271936,283092,244525,203450,236265,103253,174798,240980,50388],net:[117865,160193,163162,169855,146715,122070,141759,61952,104879,144588,30233],gp:[102829,139540,142152,147927,127811,106407,121397,52770,89756,126117,26020]},
     ya:{
-      gross:[7600,25200,58500,51600,16800,4200,0,0,0,0],
-      net:  [4940,16380,38025,33540,10920,2730,0,0,0,0],
-      gp:   [4508,15354,35433,31542,10434,2622,0,0,0,0]
+      gross:[7600,25200,58500,51600,16800,4200,0,0,0,0,0],
+      net:  [4940,16380,38025,33540,10920,2730,0,0,0,0,0],
+      gp:   [4508,15354,35433,31542,10434,2622,0,0,0,0,0]
     },
     ozon:{
-      gross:[1121390,1003738,1122920,1268927,1198445,1139801,1225388,1673891,1462908,813933],
-      net:  [ 548225, 502282, 566294, 526022, 485326, 442637, 459836, 611391, 532382,291920],
-      gp:   [ 488544, 448056, 503588, 464343, 433530, 393920, 404206, 533022, 473234,257002]
+      gross:[1121390,1003738,1122920,1268927,1198445,1139801,1225388,1673891,1462908,1226256,191271],
+      net:  [ 548225, 502282, 566294, 526022, 485326, 442637, 459836, 611391, 532382, 457192, 94390],
+      gp:   [ 488544, 448056, 503588, 464343, 433530, 393920, 404206, 533022, 473234, 407151, 85885]
     }
   }
 };
 
-// SKU — годовые итоги (источник: PL_по_SKU.csv)
+// SKU - годовые итоги (источник: PL_по_SKU.csv)
 const SKU = {
   '2025':[
     {name:'Дентал',    units:22881,rev:13292165,cogs_u:54.01, cogs:1235803,gp:12056363,margin:90.7,color:'#2563eb',price:467},
@@ -449,10 +439,10 @@ const SKU = {
     {name:'Мастидерм', units:18,   rev:18993,   cogs_u:614.78,cogs:11066,  gp:7927,    margin:41.7,color:'#059669',price:950}
   ],
   '2026':[
-    {name:'Дентал',    units:33956,rev:23077657,cogs_u:54.01, cogs:1833964,gp:21243693,margin:92.1,color:'#2563eb',price:467},
+    {name:'Дентал',    units:34950,rev:23994250,cogs_u:54.01, cogs:1887650,gp:22106600,margin:92.1,color:'#2563eb',price:467},
     {name:'Офтал',     units:0,    rev:0,       cogs_u:73.83, cogs:0,      gp:0,        margin:0,   color:'#dc2626',price:445},
-    {name:'Скин',      units:853,  rev:498793,  cogs_u:75.39, cogs:64308,  gp:434485,  margin:87.1,color:'#d97706',price:535},
-    {name:'Унгидерм',  units:1024, rev:1046770, cogs_u:619.28,cogs:634143, gp:412627,  margin:39.4,color:'#7c3aed',price:950},
+    {name:'Скин',      units:857,  rev:498689,  cogs_u:75.39, cogs:64609,  gp:434080,  margin:87.0,color:'#d97706',price:535},
+    {name:'Унгидерм',  units:1025, rev:1053140, cogs_u:619.28,cogs:634762, gp:418378,  margin:39.7,color:'#7c3aed',price:950},
     {name:'Мастидерм', units:950,  rev:907500,  cogs_u:614.78,cogs:584041, gp:323459,  margin:35.6,color:'#059669',price:950}
   ]
 };
@@ -470,12 +460,12 @@ const CP = {
     {name:'Прочие (13 конт-тов)',   deals:20,units:244,  rev:144900, gp:126025, margin:87.0,share:2.6}
   ],
   '2026':[
-    {name:'ООО ТК Ярвет',           deals:19,units:19051,rev:8272932,gp:7061917,margin:85.4,share:74.0},
-    {name:'ООО СуперВет',            deals:5, units:1717, rev:1631150,gp:539048, margin:33.0,share:14.6},
-    {name:'Ас маркет',               deals:7, units:980,  rev:457660, gp:395577, margin:86.4,share:4.1},
-    {name:'Сибагро Трейд',           deals:5, units:780,  rev:364260, gp:314847, margin:86.4,share:3.3},
+    {name:'ООО ТК Ярвет',           deals:19,units:19051,rev:8272932,gp:7061917,margin:85.4,share:72.7},
+    {name:'ООО СуперВет',            deals:5, units:1717, rev:1631150,gp:539048, margin:33.0,share:14.3},
+    {name:'Ас маркет',               deals:8, units:1120, rev:523040, gp:452088, margin:86.4,share:4.6},
+    {name:'Сибагро Трейд',           deals:6, units:960,  rev:448320, gp:387504, margin:86.4,share:3.9},
     {name:'АНКАР-имэк',              deals:1, units:200,  rev:200000, gp:72594,  margin:36.3,share:1.8},
-    {name:'Прочие (11 конт-тов)',    deals:22,units:423,  rev:258960, gp:206402, margin:79.7,share:2.3}
+    {name:'Прочие (11 конт-тов)',    deals:24,units:518,  rev:307185, gp:248446, margin:80.9,share:2.7}
   ]
 };
 
@@ -496,59 +486,63 @@ const OZ = {
   },
   '2026':{
     months:M26,
-    units:     [1105,1004,1161,1142,959,902,1030,1451,1042,528],
-    gross:     [1114809,1003738,1136140,1201853,1198184,1119984,1191762,1590187,1537916,777067],
-    commission:[400414, 361346, 408389, 520429, 539333,503993, 535730, 717669, 737290,372992],
-    delivery:  [ 61484,  50340,  62358,  78069,  78616, 84906,  74059, 101261,  97716, 48068],
-    agents:    [ 28761,  18053,  19638,  18547,  20110, 18436,  30714,  49621,  40180, 22399],
-    fbo:       [  4785,   6131,   4796,   3884,   7055,  8637,  13436,   4794,   2699,  3859],
-    adv:       [ 61391,  62038,  57593,  54631,  69917, 63453,  75871, 100323, 126809, 34619],
-    other:     [  9750,     75,  16099,    274,    330,   235,     75,    205,    140,  3210],
-    payout:    [548225, 502282, 566294, 526022, 485326,442637, 459836, 611391, 532382,291920],
-    wh:        [50.8,50.0,50.2,56.2,59.5,60.5,61.4,61.6,65.4,62.4]
+    units:     [1105,1004,1161,1142,959,902,1030,1451,1042,808,147],
+    gross:     [1114809,1003738,1136140,1201853,1198184,1119984,1191762,1590187,1537916,1191614,191271],
+    commission:[400414, 361346, 408389, 520429, 539333,503993, 535730, 717669, 737290, 571975, 76255],
+    delivery:  [ 61484,  50340,  62358,  78069,  78616, 84906,  74059, 101261,  97716,  74647, 10825],
+    agents:    [ 28761,  18053,  19638,  18547,  20110, 18436,  30714,  49621,  40180,  32311,  3543],
+    fbo:       [  4785,   6131,   4796,   3884,   7055,  8637,  13436,   4794,   2699,   5562,   244],
+    adv:       [ 61391,  62038,  57593,  54631,  69917, 63453,  75871, 100323, 126809,  41022,  6004],
+    other:     [  9750,     75,  16099,    274,    330,   235,     75,    205,    140,   8905,    10],
+    payout:    [548225, 502282, 566294, 526022, 485326,442637, 459836, 611391, 532382, 457192, 94390],
+    wh:        [50.8,50.0,50.2,56.2,59.5,60.5,61.4,61.6,65.4,61.6,50.7]
   }
 };
 // =============================================================
-// ДЕНЬГИ — источник: «Поступления Расходы» (на 22.10.2026),
-//          реестр дебиторки (на 24.09.2026)
+// ДЕНЬГИ - источник: «Поступления Расходы» (на 06.11.2026),
+//          реестр дебиторки (на 06.11.2026)
 // =============================================================
 const MONEY = {
   // Только ЗАКРЫТЫЕ месяцы. Новый месяц добавляется после закрытия: допишите
-  // значение в каждый массив. Грант исключен с обеих сторон — он транзитный:
+  // значение в каждый массив. Грант исключен с обеих сторон - он транзитный:
   // приходит и рубль в рубль уходит на «ФОТ (грант)», на деньги не влияет.
-  months:   ['Апр','Май','Июн','Июл','Авг','Сен'],
-  sales:    [1808305,2085262,1920484,1694752,2246807,1918071],  // поступления от продаж
-  loans:    [1500000,1500000,1500000,1000000,0,0],
-  other:    [0,168408,157989,500285,768872,629479],             // возврат займа НовиСтем
-  own:      [1535954,2203618,2288305,2070205,2313611,2423696],  // собственные затраты (операц. минус ФОТ по гранту)
-  fot:      [590054,1250552,1041135,1051307,1355936,1396764],   // собственный ФОТ с налогами
-  admin:    [374071,519854,441442,516807,465183,326551],
-  raw:      [332178,110532,617133,315064,302133,352667],
-  otherop:  [239651,322680,188594,187026,190358,347714],
-  debt:     [3391900,1150684,1498646,1100775,0,0],              // погашение долгов
-  close:    [343648,743016,534539,558596,1260665,1384519],      // остаток на конец месяца
-  openBal:  1963198,                                            // остаток на начало апреля
-  grantAvg: 476051                                              // транзит гранта, в среднем за июнь-сентябрь
+  // Грант закончился в октябре 2026: с ноября поступлений по нему нет.
+  months:   ['Апр','Май','Июн','Июл','Авг','Сен','Окт'],
+  sales:    [1808305,2085262,1920484,1694752,2246807,1918071,1622148],  // поступления от продаж
+  loans:    [1500000,1500000,1500000,1000000,0,0,0],
+  other:    [0,168408,157989,500285,768872,629479,280000],              // возврат займа НовиСтем
+  own:      [1535954,2203618,2288305,2070205,2313611,2423696,2382752],  // собственные затраты (операц. минус ФОТ по гранту)
+  fot:      [590054,1250552,1041135,1051307,1355936,1396764,1524392],   // собственный ФОТ с налогами
+  admin:    [374071,519854,441442,516807,465183,326551,487704],
+  raw:      [332178,110532,617133,315064,302133,352667,176564],
+  otherop:  [239651,322680,188594,187026,190358,347714,194092],
+  debt:     [3391900,1150684,1498646,1100775,0,0,0],                    // погашение долгов
+  close:    [343648,743016,534539,558596,1260665,1384519,903915],       // остаток на конец месяца
+  openBal:  1963198,                                                    // остаток на начало апреля
+  grantAvg: 462772                                                      // транзит гранта, в среднем апрель-октябрь
 };
 
 
-// Дебиторка на 24.09.2026
+
+// Дебиторка на 06.11.2026
 const AR = {
-  asof:'2026-09-24',
+  asof:'2026-11-06',
   rows:[
-    {cp:'ООО ТК Ярвет',      inv:'№48 от 12.08', due:'2026-09-29', sum:549640},
-    {cp:'ООО ТК Ярвет',      inv:'№52 от 26.08', due:'2026-10-12', sum:321664},
-    {cp:'ООО ТК Ярвет',      inv:'№54 от 09.09', due:'2026-10-26', sum:476784},
-    {cp:'ООО ТК Ярвет',      inv:'№55 от 24.09', due:'2026-11-10', sum:480205},
-    {cp:'ООО Сибагро Трейд', inv:'№56 от 15.09', due:'2026-10-31', sum:84060},
-    {cp:'ООО АС-Маркет',     inv:'№55 от 24.09', due:'2026-11-07', sum:65380},
-    {cp:'ООО ЦИВиР',         inv:'№55 от 09.09', due:'2026-10-10', sum:4260},
-    {cp:'ИП Липина',         inv:'№39 от 09.06', due:'2026-07-09', sum:7100},
-    {cp:'ИП Химанина',       inv:'№97 от 08.12.25', due:'2026-01-07', sum:6175},
-    {cp:'ИП Кара',           inv:'№21 от 06.04', due:'2026-05-07', sum:2720}
+    {cp:'ООО УК Гелео 4',   inv:'№75 от 06.11', due:'',           sum:585000},
+    {cp:'ООО ТК Ярвет',     inv:'№66 от 23.10', due:'2026-12-11', sum:513555},
+    {cp:'ООО ТК Ярвет',     inv:'№61 от 24.09', due:'2026-11-10', sum:480205},
+    {cp:'ООО ТК Ярвет',     inv:'№63 от 09.10', due:'2026-11-24', sum:465150},
+    {cp:'ООО Сибагро Трейд',inv:'№65 от 20.10', due:'2026-11-20', sum:84060},
+    {cp:'ООО АС-Маркет',    inv:'№71 от 03.11', due:'2026-12-19', sum:65380},
+    {cp:'ИП Короткова',     inv:'№68 от 23.10', due:'2026-11-29', sum:21000},
+    {cp:'ИП Борисова',      inv:'№60 от 22.09', due:'2026-10-22', sum:13530},
+    {cp:'ИП Липина',        inv:'№39 от 09.06', due:'2026-07-09', sum:7100},
+    {cp:'ИП Химанина',      inv:'№97 от 08.12.25', due:'2026-01-07', sum:6175},
+    {cp:'ИП Кара',          inv:'№21 от 06.04', due:'2026-05-07', sum:2720}
   ],
-  mp:442483
+  mp:436324
 };
+
 
 
 // =============================================================
@@ -573,7 +567,7 @@ function fmt(v){
   return Math.round(v)+'';
 }
 function fmtN(v){return new Intl.NumberFormat('ru-RU').format(Math.round(v));}
-function pct(a,b){return b>0?(a/b*100).toFixed(1)+'%':'—';}
+function pct(a,b){return b>0?(a/b*100).toFixed(1)+'%':'-';}
 function mpc(m){return m>=75?'mp-hi':m>=45?'mp-md':'mp-lo';}
 
 function getYears(){return period==='all'?['2025','2026']:[period];}
@@ -685,7 +679,7 @@ function renderInsights(){
   const oz26=OZ['2026'].wh;
   const avgWh25=(s(oz25)/oz25.length).toFixed(1);
   const avgWh26=(s(oz26)/oz26.length).toFixed(1);
-  const lastWhI=oz26.length-1;
+  const lastWhI=oz26.length-2;   // последний ЗАКРЫТЫЙ месяц: текущий еще без полных начислений
 
   const ung26=SKU['2026'].find(p=>p.name==='Унгидерм').rev;
   const mast26=SKU['2026'].find(p=>p.name==='Мастидерм').rev;
@@ -695,7 +689,7 @@ function renderInsights(){
   const ins=[
     {icon:'🏆',bc:'#dcfce7',bl:'#059669',c:'#15803d',
      t:`Лучший месяц: ${months[bestI]}`,
-     tx:`Рекордная gross выручка ${fmtN(totals[bestI])} руб. (${fmt(totals[bestI])}). Основной вклад — оптовый канал и ОЗОН.`},
+     tx:`Рекордная gross выручка ${fmtN(totals[bestI])} руб. (${fmt(totals[bestI])}). Основной вклад - оптовый канал и ОЗОН.`},
     {icon:'⚠️',bc:'#fefce8',bl:'#d97706',c:'#854d0e',
      t:'Удержания ОЗОН стабильно растут',
      tx:`2025 год: в среднем ${avgWh25}% удержаний. 2026 YTD: уже ${avgWh26}%. В ${M26[lastWhI]} 2026 ОЗОН удержал ${OZ['2026'].wh[lastWhI]}% gross. Требует внимания при ценообразовании.`},
@@ -749,7 +743,7 @@ function renderMonthTbl(){
       <thead><tr><th>Месяц</th>${chCols}<th>Итого, руб.</th><th>Маржа GP</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div class="note">* Маржа GP = вал. прибыль / gross. WB и Яндекс Маркет — оценка удержаний. Окт 2026 — неполный месяц (данные на 23.10).</div>`;
+    <div class="note">* Маржа GP = вал. прибыль / gross. WB и Яндекс Маркет - оценка удержаний. Ноя 2026 - неполный месяц (данные на 06.11).</div>`;
 }
 
 // =============================================================
@@ -816,14 +810,14 @@ function renderChannels(){
         <tr class="total-row">
           <td>ИТОГО</td>
           <td>${fmtN(totalGross)}</td>
-          <td>—</td>
+          <td>-</td>
           <td>${fmtN(totalGP)}</td>
           <td>${pct(totalGP,totalGross)}</td>
           <td>100%</td>
         </tr>
       </tbody>
     </table>
-    <div class="note">WB — удержание ~40% (оценка). Яндекс Маркет — удержание ~35% (оценка). ОЗОН — фактические данные из выписки начислений.</div>`;
+    <div class="note">WB - удержание ~40% (оценка). Яндекс Маркет - удержание ~35% (оценка). ОЗОН - фактические данные из выписки начислений.</div>`;
 }
 
 // =============================================================
@@ -886,11 +880,11 @@ function renderProducts(){
           <td>${pct(p.rev,totalRev)}</td>
           <td>${p.cogs_u.toFixed(2)}</td><td>${p.price}</td>
           <td>${fmtN(p.gp)}</td>
-          <td><span class="mp ${mpc(p.margin)}">${p.margin>0?p.margin.toFixed(1)+'%':'—'}</span></td>
+          <td><span class="mp ${mpc(p.margin)}">${p.margin>0?p.margin.toFixed(1)+'%':'-'}</span></td>
         </tr>`).join('')}
         <tr class="total-row">
           <td>ИТОГО</td><td>${fmtN(totalUnits)}</td><td>${fmtN(totalRev)}</td>
-          <td>100%</td><td>—</td><td>—</td><td>${fmtN(totalGP)}</td>
+          <td>100%</td><td>-</td><td>-</td><td>${fmtN(totalGP)}</td>
           <td>${pct(totalGP,totalRev)}</td>
         </tr>
       </tbody>
@@ -971,7 +965,7 @@ function renderOzon(){
   document.getElementById('ozKpi').innerHTML=[
     {l:'Gross продажи',        v:fmt(tGross),              s:sy+' год',                 c:'#059669'},
     {l:'Выплачено',            v:fmt(tPay),                s:(tPay/tGross*100).toFixed(1)+'% от gross',  c:'#2563eb'},
-    {l:'Итого удержано',       v:fmt(tGross-tPay),         s:'-'+totalWh.toFixed(1)+'% от gross',        c:'#dc2626'},
+    {l:'Итого удержано',       v:fmt(tGross-tPay),         s:totalWh.toFixed(1)+'% от gross',            c:'#dc2626'},
     {l:'Комиссия Ozon',        v:fmt(tComm),               s:pct(tComm,tGross)+' от gross',              c:'#7c3aed'},
     {l:'Реклама и продвиж.',   v:fmt(tAdv),                s:pct(tAdv,tGross)+' от gross',               c:'#d97706'},
     {l:'Продано единиц',       v:fmtN(tUnits),
@@ -1041,7 +1035,7 @@ function renderOzon(){
           <td>${m}</td>
           <td>${fmtN(oz.units[i])}</td>
           <td>${fmtN(oz.gross[i])}</td>
-          <td style="color:var(--muted)">${oz.units[i]?fmtN(oz.gross[i]/oz.units[i]):'—'}</td>
+          <td style="color:var(--muted)">${oz.units[i]?fmtN(oz.gross[i]/oz.units[i]):'-'}</td>
           <td style="color:#dc2626">${fmtN(oz.commission[i])}</td>
           <td>${fmtN(oz.delivery[i])}</td>
           <td>${fmtN(oz.agents[i])}</td>
@@ -1049,7 +1043,7 @@ function renderOzon(){
           <td>${fmtN(oz.adv[i])}</td>
           <td>${fmtN(oz.other[i])}</td>
           <td style="color:#059669;font-weight:700">${fmtN(oz.payout[i])}</td>
-          <td style="color:#059669">${oz.units[i]?fmtN(oz.payout[i]/oz.units[i]):'—'}</td>
+          <td style="color:#059669">${oz.units[i]?fmtN(oz.payout[i]/oz.units[i]):'-'}</td>
           <td><span class="mp ${oz.wh[i]>=55?'mp-lo':oz.wh[i]>=42?'mp-md':'mp-hi'}">${oz.wh[i].toFixed(1)}%</span></td>
         </tr>`).join('')}
         <tr class="total-row">
@@ -1069,8 +1063,8 @@ function renderOzon(){
         </tr>
       </tbody>
     </table>
-    <div class="note">Источник: выписка начислений ОЗОН. Окт 2026 — неполный месяц (данные на 23.10). Поступления за Июл-Окт рассчитаны по статьям начислений. «Руб/шт» — цена на витрине, «Получено/шт» — сколько дошло до компании после всех удержаний.
-    Высокая доставка Сен 2025 — вероятная опечатка в исходнике ОЗОН (341 тыс.).</div>`;
+    <div class="note">Источник: выписка начислений ОЗОН. Ноя 2026 - неполный месяц (данные на 06.11). Поступления за Июл-Ноя рассчитаны по статьям начислений. «Руб/шт» - цена на витрине, «Получено/шт» - сколько дошло до компании после всех удержаний.
+    Высокая доставка Сен 2025 - вероятная опечатка в исходнике ОЗОН (341 тыс.).</div>`;
 }
 
 // =============================================================
@@ -1078,7 +1072,7 @@ function renderOzon(){
 // =============================================================
 function renderMoney(){
   const M=MONEY, n=M.months.length, i=n-1;
-  const mName={'Апр':'апрель','Май':'май','Июн':'июнь','Июл':'июль','Авг':'август','Сен':'сентябрь','Окт':'октябрь'};
+  const mName={'Апр':'апрель','Май':'май','Июн':'июнь','Июл':'июль','Авг':'август','Сен':'сентябрь','Окт':'октябрь','Ноя':'ноябрь','Дек':'декабрь'};
   const last=mName[M.months[i]]||M.months[i], lastOf=last.slice(0,-1)+'я';
   const inflow=k=>M.sales[k]+M.loans[k]+M.other[k];
   const chg=k=>inflow(k)-M.own[k]-M.debt[k];
@@ -1136,12 +1130,12 @@ function renderMoney(){
   });
 
   // ---------- безубыточность (кассовая логика) ----------
-  const P=[2,3,4,5], np=P.length, av=a=>P.reduce((x,k)=>x+a[k],0)/np;
+  const np=Math.min(4,n), P=Array.from({length:np},(_,x)=>n-np+x), av=a=>P.reduce((x,k)=>x+a[k],0)/np;
   const salesM=av(M.sales), ownM=av(M.own), rawM=av(M.raw), fixM=ownM-rawM;
   const rawShare=rawM/salesM, needS=fixM/(1-rawShare), cutF=ownM-salesM;
   document.getElementById('scnGrid').innerHTML=`
     <div class="scn" style="border-top-color:var(--opt)">
-      <div class="scn-tag">Путь 1 — рост продаж</div>
+      <div class="scn-tag">Путь 1 - рост продаж</div>
       <div class="scn-sub">Сколько должно поступать от продаж в месяц, чтобы закрыть собственные затраты</div>
       <div class="scn-val" style="color:var(--opt)">${fmt(needS)}</div>
       <div class="scn-delta" style="color:var(--red)">+${(needS/salesM*100-100).toFixed(0)}% к текущим</div>
@@ -1152,7 +1146,7 @@ function renderMoney(){
       <div class="scn-cap"><span>сейчас <b>${fmt(salesM)}</b></span><span>нужно <b>${fmt(needS)}</b></span></div>
     </div>
     <div class="scn" style="border-top-color:var(--wb)">
-      <div class="scn-tag">Путь 2 — сокращение затрат</div>
+      <div class="scn-tag">Путь 2 - сокращение затрат</div>
       <div class="scn-sub">На столько собственные затраты превышают поступления от продаж</div>
       <div class="scn-val" style="color:var(--wb)">${fmt(cutF)}</div>
       <div class="scn-delta" style="color:var(--red)">−${(cutF/fixM*100).toFixed(0)}% постоянных затрат</div>
@@ -1164,14 +1158,15 @@ function renderMoney(){
     </div>`;
   document.getElementById('scnNote').innerHTML=
     `<div class="chain">
-       <div class="chain-t">В среднем за месяц, июнь–сентябрь</div>
+       <div class="chain-t">В среднем за месяц, ${mName[M.months[P[0]]]||M.months[P[0]]}-${last}</div>
        <div class="chain-r"><span>Поступило от продаж</span><b>${fmtN(salesM)}</b></div>
        <div class="chain-r"><span>минус сырье и материалы</span><b style="color:var(--red)">−${fmtN(rawM)}</b></div>
        <div class="chain-r"><span>минус постоянные затраты (ФОТ, аренда, прочее)</span><b style="color:var(--red)">−${fmtN(fixM)}</b></div>
        <div class="chain-r sum"><span>Дефицит по собственным деньгам</span><b style="color:var(--red)">${fmtN(salesM-ownM)}</b></div>
      </div>
-     <div style="margin-top:12px;">Грант в расчете не участвует: он приходит и рубль в рубль уходит на зарплаты по гранту
-     (в среднем ${fmtN(M.grantAvg)} руб./мес). Когда грант закончится, вместе с ним уйдут и эти зарплаты — на дефицит это не повлияет.</div>`;
+     <div style="margin-top:12px;">Грант в расчете не участвует: он приходил и рубль в рубль уходил на зарплаты по гранту
+     (в среднем ${fmtN(M.grantAvg)} руб./мес, апрель-октябрь). <b>С ноября поступлений по гранту нет</b> - вместе с ними ушли
+     и эти зарплаты, на дефицит по собственным деньгам это не влияет.</div>`;
 
   // ---------- таблица ----------
   document.getElementById('moneyTbl').innerHTML=`
@@ -1186,11 +1181,11 @@ function renderMoney(){
       ${M.months.map((m,k)=>{const c=chg(k),cv=M.sales[k]/M.own[k]*100;return `<tr>
         <td>${m}</td>
         <td class="b-in">${fmtN(M.sales[k])}</td>
-        <td>${M.loans[k]?fmtN(M.loans[k]):'—'}</td>
-        <td>${M.other[k]?fmtN(M.other[k]):'—'}</td>
+        <td>${M.loans[k]?fmtN(M.loans[k]):'-'}</td>
+        <td>${M.other[k]?fmtN(M.other[k]):'-'}</td>
         <td style="font-weight:600">${fmtN(inflow(k))}</td>
         <td class="b-out" style="color:#dc2626">${fmtN(M.own[k])}</td>
-        <td style="color:#dc2626">${M.debt[k]?fmtN(M.debt[k]):'—'}</td>
+        <td style="color:#dc2626">${M.debt[k]?fmtN(M.debt[k]):'-'}</td>
         <td class="b-res" style="color:${c<0?'#dc2626':'#059669'};font-weight:600">${c>0?'+':''}${fmtN(c)}</td>
         <td style="font-weight:600">${fmtN(M.close[k])}</td>
         <td><span class="mp ${cv>=100?'mp-hi':cv>=85?'mp-md':'mp-lo'}">${cv.toFixed(0)}%</span></td></tr>`}).join('')}
@@ -1206,16 +1201,19 @@ function renderMoney(){
     <div class="note">
       Каждая строка сходится: остаток предыдущего месяца + «Всего» − «Собств. затраты» − «Погашение долгов» = «Остаток на конец».
       На начало апреля на счете было ${fmtN(M.openBal)} руб.<br>
-      «Собств. затраты» — операционные за вычетом зарплат по гранту; грант и эти зарплаты исключены с обеих сторон, они транзитные.
-      «Прочее» — возврат займа от НовиСтем.<br>
-      «Покрытие» — продажи к собственным затратам: окупает ли себя деятельность без займов и возвратов.
-      Остаток — срез на последний день месяца; оперативный остаток в чате бухгалтерии.
+      «Собств. затраты» - операционные за вычетом зарплат по гранту; грант и эти зарплаты исключены с обеих сторон, они транзитные.
+      «Прочее» - возврат займа от НовиСтем.<br>
+      «Покрытие» - продажи к собственным затратам: окупает ли себя деятельность без займов и возвратов.
+      Остаток - срез на последний день месяца; оперативный остаток в чате бухгалтерии.
     </div>`;
 
   // ---------- дебиторка ----------
   const ref=new Date(AR.asof);
-  const rows=AR.rows.map(r=>{const d=new Date(r.due);return{...r,od:Math.round((ref-d)/864e5)};}).sort((a,b)=>b.od-a.od);
+  const rows=AR.rows.map(r=>{if(!r.due) return {...r,od:null};
+    const d=new Date(r.due);return{...r,od:Math.round((ref-d)/864e5)};})
+    .sort((a,b)=>(b.od===null?-1e9:b.od)-(a.od===null?-1e9:a.od));
   const overdue=rows.filter(r=>r.od>0), odSum=s(overdue.map(r=>r.sum));
+  const noDue=rows.filter(r=>r.od===null), noDueSum=s(noDue.map(r=>r.sum));
   document.getElementById('arTbl').innerHTML=`
     <table><thead><tr>
       <th>Контрагент</th><th style="text-align:left">Счет</th><th style="text-align:left">Срок оплаты</th>
@@ -1223,17 +1221,18 @@ function renderMoney(){
       ${rows.map(r=>`<tr>
         <td>${r.cp}</td>
         <td style="text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--muted)">${r.inv}</td>
-        <td style="text-align:left">${r.due.split('-').reverse().join('.')}</td>
+        <td style="text-align:left">${r.due?r.due.split('-').reverse().join('.'):'<span style="color:var(--muted)">не указан</span>'}</td>
         <td style="font-weight:600">${fmtN(r.sum)}</td>
-        <td><span class="mp ${r.od>60?'mp-lo':r.od>0?'mp-md':'mp-hi'}">${r.od>0?'просрочка '+r.od+' дн.':'в сроке'}</span></td>
+        <td><span class="mp ${r.od===null?'mp-md':r.od>60?'mp-lo':r.od>0?'mp-md':'mp-hi'}">${r.od===null?'срок не указан':r.od>0?'просрочка '+r.od+' дн.':'в сроке'}</span></td>
       </tr>`).join('')}
       <tr><td>Маркетплейсы</td><td style="text-align:left;color:var(--muted);font-family:var(--mono);font-size:11.5px">6 позиций</td>
-        <td style="text-align:left">—</td><td style="font-weight:600">${fmtN(AR.mp)}</td>
+        <td style="text-align:left">-</td><td style="font-weight:600">${fmtN(AR.mp)}</td>
         <td><span class="mp mp-hi">в сроке</span></td></tr>
       <tr class="total-row"><td>Итого</td><td></td><td></td><td>${fmtN(arTotal)}</td><td></td></tr>
     </tbody></table>
     <div class="note">Просрочено ${fmtN(odSum)} руб. (${(odSum/arTotal*100).toFixed(1)}% портфеля) по ${overdue.length} счетам.
-    Основная сумма — ${fmtN(s(rows.filter(r=>r.cp.includes('Ярвет')).map(r=>r.sum)))} руб. по ООО ТК Ярвет, сроки оплаты до 10.11.
+    ${noDue.length?`<b style="color:#d97706">Без срока оплаты ${fmtN(noDueSum)} руб.</b> (${noDue.map(r=>r.cp).join(', ')}) - срок в реестре не проставлен, нужно уточнить у бухгалтерии. `:''}Крупнейший должник - ООО ТК Ярвет,
+    ${fmtN(s(rows.filter(r=>r.cp.includes('Ярвет')).map(r=>r.sum)))} руб. по ${rows.filter(r=>r.cp.includes('Ярвет')).length} счетам со сроками до 11.12.
     Отсрочка по договору доходит до 45 дней: компания кредитует ключевого дистрибьютора при собственном дефиците кассы.</div>`;
 }
 
@@ -1247,12 +1246,12 @@ function showPage(id){
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.toggle('active', n.getAttribute('onclick')===`showPage('${id}')`);
   });
-  const titles={overview:'Обзор продаж',channels:'Каналы дистрибуции',products:'Продукты (SKU)',clients:'Контрагенты — опт',money:'Деньги и ликвидность',ozon:'ОЗОН — детальные начисления'};
+  const titles={overview:'Обзор продаж',channels:'Каналы дистрибуции',products:'Продукты (SKU)',clients:'Контрагенты - опт',money:'Деньги и ликвидность',ozon:'ОЗОН - детальные начисления'};
   const idx={overview:'01',channels:'02',products:'03',clients:'04',money:'05',ozon:'06'};
   document.getElementById('pageTitle').textContent=titles[id]||'';
   document.getElementById('pageKicker').textContent='Раздел '+(idx[id]||'');
   document.querySelector('.upd-tag').innerHTML = id==='money'
-    ? 'Финансы на: <b>22.10.2026</b>' : 'Данные на: <b>23.10.2026</b>';
+    ? 'Финансы на: <b>06.11.2026</b>' : 'Данные на: <b>06.11.2026</b>';
   // период и SKU-фильтр к разделу «Деньги» не применяются
   document.querySelector('.period-pills').style.display = id==='money' ? 'none' : '';
   renderPage();
